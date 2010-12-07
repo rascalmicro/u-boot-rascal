@@ -133,7 +133,6 @@
 
 /* Ethernet */
 #define CONFIG_MACB			1
-#define CONFIG_RMII			1
 #define CONFIG_NET_MULTI		1
 #define CONFIG_NET_RETRY_COUNT		20
 #define CONFIG_RESET_PHY_R		1
@@ -189,13 +188,16 @@
 #define CONFIG_ENV_OFFSET		0x60000
 #define CONFIG_ENV_OFFSET_REDUND	0x80000
 #define CONFIG_ENV_SIZE		0x20000		/* 1 sector = 128 kB */
-#define CONFIG_BOOTCOMMAND	"nand read 0x22000000 0xA0000 0x200000; bootm"
+#define CONFIG_BOOTCOMMAND	"tftpboot 0x22000000 linux-2.6.36.bin; bootm 0x22000000"
 #define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
 				"root=/dev/mtdblock5 "			\
 				"mtdparts=atmel_nand:128k(bootstrap)ro,"	\
 				"256k(uboot)ro,128k(env1)ro,"		\
 				"128k(env2)ro,2M(linux),-(root) "	\
 				"rw rootfstype=jffs2"
+#define CONFIG_IPADDR 192.168.1.20
+#define CONFIG_SERVERIP 192.168.1.57
+#define CONFIG_ETHADDR 02:03:04:00:00:05
 
 #endif
 
