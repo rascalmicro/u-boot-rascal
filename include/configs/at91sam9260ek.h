@@ -189,12 +189,9 @@
 #define CONFIG_ENV_OFFSET_REDUND	0x80000
 #define CONFIG_ENV_SIZE		0x20000		/* 1 sector = 128 kB */
 #define CONFIG_BOOTCOMMAND	"tftpboot 0x22000000 linux-2.6.36.bin; bootm 0x22000000"
-#define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
-				"root=/dev/mtdblock5 "			\
-				"mtdparts=atmel_nand:128k(bootstrap)ro,"	\
-				"256k(uboot)ro,128k(env1)ro,"		\
-				"128k(env2)ro,2M(linux),-(root) "	\
-				"rw rootfstype=jffs2"
+#define CONFIG_BOOTARGS		"setenv bootargs console=ttyS0,115200 " \
+    "root=/dev/nfs rw rootfstype=nfs nfsroot=192.168.1.57:/nfs/rootfs " \
+    "ip=192.168.1.20:192.168.1.57:192.168.1.1:255.255.255.0:rascal::off:"
 #define CONFIG_IPADDR 192.168.1.20
 #define CONFIG_SERVERIP 192.168.1.57
 #define CONFIG_ETHADDR 02:03:04:00:00:05
