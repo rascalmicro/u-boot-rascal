@@ -92,6 +92,13 @@
 #define CONFIG_CMD_NAND		1
 #define CONFIG_CMD_USB		1
 
+/* SD/MMC card */
+#define CONFIG_MMC                      1
+#define CONFIG_GENERIC_MMC              1
+#define CONFIG_GENERIC_ATMEL_MCI        1
+#define CONFIG_SYS_MMC_CD_PIN           AT91_PIN_PC9
+#define CONFIG_CMD_MMC                  1
+
 /* SDRAM */
 #define CONFIG_NR_DRAM_BANKS		1
 #define PHYS_SDRAM			0x20000000

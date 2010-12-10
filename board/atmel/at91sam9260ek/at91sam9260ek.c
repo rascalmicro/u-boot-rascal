@@ -37,6 +37,9 @@
 #endif
 #include <netdev.h>
 
+#ifdef CONFIG_GENERIC_ATMEL_MCI
+# include <mmc.h>
+#endif
 DECLARE_GLOBAL_DATA_PTR;
 
 /* ------------------------------------------------------------------------- */
@@ -190,3 +193,31 @@ int board_eth_init(bd_t *bis)
 #endif
 	return rc;
 }
+
+#ifdef CONFIG_GENERIC_ATMEL_MCI
+/* this is a weak define that we are overriding */
+int board_mmc_init(bd_t *bd)
+{
+       /* Enable clock */
+       at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9260_ID_MCI);
+       at91_mci_hw_init();
+
+       /* This calls the atmel_mci_init in gen_atmel_mci.c */
+       return atmel_mci_init((void *)AT91_BASE_MCI);
+}
+
+/* this is a weak define that we are overriding */
+int board_mmc_getcd(u8 *cd, struct mmc *mmc)
+{
+       /*
+        * the only currently existing use of this function
+        * (fsl_esdhc.c) suggests this function must return
+        * *cs = TRUE if a card is NOT detected -> in most
+        * cases the value of the pin when the detect switch
+        * closes to GND
+        */
+       *cd = at91_get_gpio_value (CONFIG_SYS_MMC_CD_PIN) ? 1 : 0;
+       return 0;
+}
+
+#endif
