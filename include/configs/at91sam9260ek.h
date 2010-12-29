@@ -104,6 +104,14 @@
 #define PHYS_SDRAM			0x20000000
 #define PHYS_SDRAM_SIZE			0x04000000	/* 64 megs */
 
+/* SPI */
+#define CONFIG_SPI
+#define CONFIG_ATMEL_SPI
+#define CONFIG_SPI_FLASH
+#define CONFIG_SPI_FLASH_MACRONIX
+#define CONFIG_CMD_SPI
+#define CONFIG_CMD_SF
+
 /* DataFlash */
 #define CONFIG_ATMEL_DATAFLASH_SPI
 #define CONFIG_HAS_DATAFLASH		1
