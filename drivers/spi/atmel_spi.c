@@ -95,6 +95,10 @@ struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
 			| ATMEL_SPI_MR_PCS(~(1 << cs) & 0xf);
 	spi_writel(as, CSR(cs), csrx);
 
+    /* Override hardware CS control */
+    printf("Initializing SPI0 CS line for software control\n");
+	at91_spi0_hw_init(1 << 4);
+
 	return &as->slave;
 }
 
