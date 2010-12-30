@@ -30,9 +30,7 @@ include $(TOPDIR)/config.mk
 LIB	= $(obj)lib$(BOARD).a
 
 COBJS-y	+= at91sam9260ek.o
-COBJS-y	+= led.o
 COBJS-y	+= spi.o
-COBJS-$(CONFIG_HAS_DATAFLASH) += partition.o
 
 SRCS	:= $(SOBJS:.o=.S) $(COBJS-y:.o=.c)
 OBJS	:= $(addprefix $(obj),$(COBJS-y))

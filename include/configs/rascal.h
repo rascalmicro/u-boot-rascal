@@ -60,13 +60,6 @@
 #undef CONFIG_USART2
 #define CONFIG_USART3		1	/* USART 3 is DBGU */
 
-/* LED */
-#define CONFIG_AT91_LED
-#define	CONFIG_RED_LED		AT91_PIN_PA9	/* this is the power led */
-#define	CONFIG_GREEN_LED	AT91_PIN_PA6	/* this is the user led */
-
-#define CONFIG_BOOTDELAY	3
-
 /*
  * BOOTP options
  */
@@ -138,11 +131,14 @@
 /* U-boot environment */
 #define CONFIG_ENV_IS_NOWHERE
 #define CONFIG_ENV_SIZE		0x20000		/* 1 sector = 128 kB */
+
+/* Default environment variables */
+#define CONFIG_BOOTDELAY	3
 #define CONFIG_BOOTCOMMAND "sf probe 0 15000000 0; sf read 22000000 100000 2fffff; bootm 0x22000000"
 #define CONFIG_BOOTARGS "console=ttyS0,115200"
 #define CONFIG_ETHADDR 02:03:04:00:00:06
-
 #define CONFIG_BAUDRATE		115200
+
 #define CONFIG_SYS_BAUDRATE_TABLE	{115200 , 19200, 38400, 57600, 9600 }
 
 #define CONFIG_SYS_PROMPT		"U-Boot> "
