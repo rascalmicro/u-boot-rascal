@@ -88,7 +88,6 @@
 
 #define CONFIG_CMD_PING		1
 #define CONFIG_CMD_DHCP		1
-#define CONFIG_CMD_NAND		1
 #define CONFIG_CMD_USB		1
 
 /* SD/MMC card */
@@ -110,21 +109,6 @@
 #define CONFIG_SPI_FLASH_MACRONIX
 #define CONFIG_CMD_SPI
 #define CONFIG_CMD_SF
-
-/* NAND flash */
-#ifdef CONFIG_CMD_NAND
-#define CONFIG_NAND_ATMEL
-#define CONFIG_SYS_MAX_NAND_DEVICE		1
-#define CONFIG_SYS_NAND_BASE			0x40000000
-#define CONFIG_SYS_NAND_DBW_8			1
-/* our ALE is AD21 */
-#define CONFIG_SYS_NAND_MASK_ALE		(1 << 21)
-/* our CLE is AD22 */
-#define CONFIG_SYS_NAND_MASK_CLE		(1 << 22)
-#define CONFIG_SYS_NAND_ENABLE_PIN		AT91_PIN_PC14
-#define CONFIG_SYS_NAND_READY_PIN		AT91_PIN_PC13
-
-#endif
 
 /* NOR flash - no real flash on this board */
 #define CONFIG_SYS_NO_FLASH			1
@@ -151,10 +135,8 @@
 #define CONFIG_SYS_MEMTEST_START		PHYS_SDRAM
 #define CONFIG_SYS_MEMTEST_END			0x23e00000
 
-/* bootstrap + u-boot + env + linux in nandflash */
-#define CONFIG_ENV_IS_IN_NAND	1
-#define CONFIG_ENV_OFFSET		0x60000
-#define CONFIG_ENV_OFFSET_REDUND	0x80000
+/* U-boot environment */
+#define CONFIG_ENV_IS_NOWHERE
 #define CONFIG_ENV_SIZE		0x20000		/* 1 sector = 128 kB */
 #define CONFIG_BOOTCOMMAND "sf probe 0 15000000 0; sf read 22000000 100000 2fffff; bootm 0x22000000"
 #define CONFIG_BOOTARGS "console=ttyS0,115200"
