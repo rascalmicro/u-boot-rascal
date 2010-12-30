@@ -2016,6 +2016,12 @@ at91sam9g45ekes_config	:	unconfig
 	fi;
 	@$(MKCONFIG) -n $@ -a at91sam9m10g45ek arm arm926ejs at91sam9m10g45ek atmel at91
 
+rascal_config   :   unconfig
+	@mkdir -p $(obj)include
+	echo "#define CONFIG_AT91SAM9G20EK 1"   >>$(obj)include/config.h ;
+	echo "#define CONFIG_SYS_USE_NANDFLASH 1"   >>$(obj)include/config.h ;
+	@$(MKCONFIG) -n $@ -a rascal arm arm926ejs rascal rascalmicro at91
+
 pm9g45_config	:	unconfig
 	@mkdir -p $(obj)include
 	@$(MKCONFIG) -a pm9g45 arm arm926ejs pm9g45 ronetix at91
