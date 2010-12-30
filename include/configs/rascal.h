@@ -111,22 +111,6 @@
 #define CONFIG_CMD_SPI
 #define CONFIG_CMD_SF
 
-/* DataFlash */
-#define CONFIG_ATMEL_DATAFLASH_SPI
-#define CONFIG_HAS_DATAFLASH		1
-#define CONFIG_SYS_SPI_WRITE_TOUT		(5*CONFIG_SYS_HZ)
-#define CONFIG_SYS_MAX_DATAFLASH_BANKS		2
-#define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0	0xC0000000	/* CS0 */
-#define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1	0xD0000000	/* CS1 */
-#define AT91_SPI_CLK			15000000
-
-#ifdef CONFIG_AT91SAM9G20EK
-#define DATAFLASH_TCSS			(0x22 << 16)
-#else
-#define DATAFLASH_TCSS			(0x1a << 16)
-#endif
-#define DATAFLASH_TCHS			(0x1 << 24)
-
 /* NAND flash */
 #ifdef CONFIG_CMD_NAND
 #define CONFIG_NAND_ATMEL
@@ -167,36 +151,6 @@
 #define CONFIG_SYS_MEMTEST_START		PHYS_SDRAM
 #define CONFIG_SYS_MEMTEST_END			0x23e00000
 
-#ifdef CONFIG_SYS_USE_DATAFLASH_CS0
-
-/* bootstrap + u-boot + env + linux in dataflash on CS0 */
-#define CONFIG_ENV_IS_IN_DATAFLASH	1
-#define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0 + 0x8400)
-#define CONFIG_ENV_OFFSET		0x4200
-#define CONFIG_ENV_ADDR		(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0 + CONFIG_ENV_OFFSET)
-#define CONFIG_ENV_SIZE		0x4200
-#define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x22000000 0x210000; bootm"
-#define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
-				"root=/dev/mtdblock0 "			\
-				"mtdparts=atmel_nand:-(root) "		\
-				"rw rootfstype=jffs2"
-
-#elif CONFIG_SYS_USE_DATAFLASH_CS1
-
-/* bootstrap + u-boot + env + linux in dataflash on CS1 */
-#define CONFIG_ENV_IS_IN_DATAFLASH	1
-#define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1 + 0x8400)
-#define CONFIG_ENV_OFFSET		0x4200
-#define CONFIG_ENV_ADDR		(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1 + CONFIG_ENV_OFFSET)
-#define CONFIG_ENV_SIZE		0x4200
-#define CONFIG_BOOTCOMMAND	"cp.b 0xD0042000 0x22000000 0x210000; bootm"
-#define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
-				"root=/dev/mtdblock0 "			\
-				"mtdparts=atmel_nand:-(root) "		\
-				"rw rootfstype=jffs2"
-
-#else /* CONFIG_SYS_USE_NANDFLASH */
-
 /* bootstrap + u-boot + env + linux in nandflash */
 #define CONFIG_ENV_IS_IN_NAND	1
 #define CONFIG_ENV_OFFSET		0x60000
@@ -205,8 +159,6 @@
 #define CONFIG_BOOTCOMMAND "sf probe 0 15000000 0; sf read 22000000 100000 2fffff; bootm 0x22000000"
 #define CONFIG_BOOTARGS "console=ttyS0,115200"
 #define CONFIG_ETHADDR 02:03:04:00:00:06
-
-#endif
 
 #define CONFIG_BAUDRATE		115200
 #define CONFIG_SYS_BAUDRATE_TABLE	{115200 , 19200, 38400, 57600, 9600 }
