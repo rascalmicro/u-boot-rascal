@@ -44,47 +44,8 @@ DECLARE_GLOBAL_DATA_PTR;
 
 /* ------------------------------------------------------------------------- */
 /*
- * Miscelaneous platform dependent initialisations
+ * Miscellaneous platform dependent initialisations
  */
-
-#ifdef CONFIG_CMD_NAND
-static void at91sam9260ek_nand_hw_init(void)
-{
-	unsigned long csa;
-
-	/* Enable CS3 */
-	csa = at91_sys_read(AT91_MATRIX_EBICSA);
-	at91_sys_write(AT91_MATRIX_EBICSA,
-		       csa | AT91_MATRIX_CS3A_SMC_SMARTMEDIA);
-
-	/* Configure SMC CS3 for NAND/SmartMedia */
-	at91_sys_write(AT91_SMC_SETUP(3),
-		       AT91_SMC_NWESETUP_(1) | AT91_SMC_NCS_WRSETUP_(0) |
-		       AT91_SMC_NRDSETUP_(1) | AT91_SMC_NCS_RDSETUP_(0));
-	at91_sys_write(AT91_SMC_PULSE(3),
-		       AT91_SMC_NWEPULSE_(3) | AT91_SMC_NCS_WRPULSE_(3) |
-		       AT91_SMC_NRDPULSE_(3) | AT91_SMC_NCS_RDPULSE_(3));
-	at91_sys_write(AT91_SMC_CYCLE(3),
-		       AT91_SMC_NWECYCLE_(5) | AT91_SMC_NRDCYCLE_(5));
-	at91_sys_write(AT91_SMC_MODE(3),
-		       AT91_SMC_READMODE | AT91_SMC_WRITEMODE |
-		       AT91_SMC_EXNWMODE_DISABLE |
-#ifdef CONFIG_SYS_NAND_DBW_16
-		       AT91_SMC_DBW_16 |
-#else /* CONFIG_SYS_NAND_DBW_8 */
-		       AT91_SMC_DBW_8 |
-#endif
-		       AT91_SMC_TDF_(2));
-
-	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9260_ID_PIOC);
-
-	/* Configure RDY/BSY */
-	at91_set_gpio_input(CONFIG_SYS_NAND_READY_PIN, 1);
-
-	/* Enable NandFlash */
-	at91_set_gpio_output(CONFIG_SYS_NAND_ENABLE_PIN, 1);
-}
-#endif
 
 #ifdef CONFIG_MACB
 static void at91sam9260ek_macb_hw_init(void)
@@ -148,23 +109,12 @@ int board_init(void)
 	/* Enable Ctrlc */
 	console_init_f();
 
-#ifdef CONFIG_AT91SAM9G20EK
-	/* arch number of AT91SAM9260EK-Board */
+	/* arch number of AT91SAM9G20EK-Board */
 	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9G20EK;
-#else
-	/* arch number of AT91SAM9260EK-Board */
-	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9260EK;
-#endif
-	/* adress of boot parameters */
+	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
 	at91_serial_hw_init();
-#ifdef CONFIG_CMD_NAND
-	at91sam9260ek_nand_hw_init();
-#endif
-#ifdef CONFIG_HAS_DATAFLASH
-	at91_spi0_hw_init((1 << 0) | (1 << 1));
-#endif
 #ifdef CONFIG_MACB
 	at91sam9260ek_macb_hw_init();
 #endif
