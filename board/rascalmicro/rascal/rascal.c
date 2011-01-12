@@ -110,7 +110,7 @@ int board_init(void)
 	console_init_f();
 
 	/* arch number of AT91SAM9G20EK-Board */
-	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9G20EK;
+	gd->bd->bi_arch_number = MACH_TYPE_RASCAL;
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
