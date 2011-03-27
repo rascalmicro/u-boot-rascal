@@ -45,6 +45,10 @@ clean:
 distclean:	clean
 	rm -f $(LIB) core *.bak $(obj).depend
 
+hellotarget:
+	echo "HELLO, TARGET!!!!"
+
+
 #########################################################################
 
 # defines $(obj).depend target
