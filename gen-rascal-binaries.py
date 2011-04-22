@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import csv, os, subprocess, sys
+import csv, os, subprocess, sys, time
+
+start = time.time()
+
+# Load the data into memory
 
 s = []
 with open('../../hash-mac-serial-0001-1000.csv', 'rb') as f:
@@ -11,18 +15,18 @@ with open('../../hash-mac-serial-0001-1000.csv', 'rb') as f:
 os.environ['CROSS_COMPILE'] = 'arm-linux-'
 os.environ['PATH'] = os.environ['PATH'] + ':/opt/eldk/usr/bin:/opt/eldk/bin:/opt/cs/bin'
 
+# Build the binaries in the range specified on the command line
+
 for i in range(int(sys.argv[1]), int(sys.argv[2]) + 1):
     pwhash = s[i][0]
     mac = s[i][1]
     serial = s[i][2]
     hostname = 'rascal' + serial[2:6].lstrip('0')
 
-    config_text ="""#define CONFIG_RASCAL_DEFAULT_PASSWORD_HASH {0}
-#define CONFIG_RASCAL_ETHADDR {1}
-#define CONFIG_RASCAL_HOSTNAME {2}""".format(pwhash, mac, hostname)
+    config_text ="""#define CONFIG_RASCAL_BOOTARGS "console=ttyS0,115200 ip=::::{0}:: pwhash={1}"
+#define CONFIG_RASCAL_ETHADDR {2}""".format(hostname, pwhash, mac)
 
     commands = [
-        'env',
         'cp include/configs/rascal.h rascal.h.orig',
         'echo "' + config_text + '" >> include/configs/rascal.h',
         'make distclean; make rascal_config; make all',
@@ -31,4 +35,11 @@ for i in range(int(sys.argv[1]), int(sys.argv[2]) + 1):
     ]
     for cmd in commands:
         print(cmd)
-        subprocess.Popen(cmd, shell=True)
+        subprocess.call(cmd, shell=True)
+
+# Print some stats
+
+stop = time.time()
+total = int(sys.argv[2]) + 1 - int(sys.argv[1])
+
+print 'Built {0} U-boot binaries at a pace of {1} seconds per binary'.format(total , (stop - start)/total)
