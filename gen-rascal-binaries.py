@@ -24,14 +24,14 @@ for i in range(int(sys.argv[1]), int(sys.argv[2]) + 1):
     hostname = 'rascal' + serial[2:6].lstrip('0')
 
     bootargs ='\'#define CONFIG_RASCAL_BOOTARGS "console=ttyS0,115200 ip=::::{0}:: pwhash={1}"\''.format(hostname, pwhash)
-    ethaddr = '#define CONFIG_RASCAL_ETHADDR {0}'.format(mac)
+    ethaddr = '\'#define CONFIG_RASCAL_ETHADDR {0}\''.format(mac)
 
     commands = [
         'cp include/configs/rascal.h rascal.h.orig',
         'echo ' + bootargs + ' >> include/configs/rascal.h',
         'echo ' + ethaddr + ' >> include/configs/rascal.h',
         'make distclean; make rascal_config; make all',
-        'cp u-boot.bin ../u-boot-{0}'.format(serial.lower()),
+        'cp u-boot.bin ~/Desktop/Dropbox/Rascal/Software/useful-binaries/u-boot-{0}.bin'.format(serial.lower()),
         'cp rascal.h.orig include/configs/rascal.h',
     ]
     for cmd in commands:
