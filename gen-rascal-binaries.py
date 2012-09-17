@@ -7,7 +7,7 @@ start = time.time()
 # Load the data into memory
 
 s = []
-with open('../../hash-mac-serial-0001-1000.csv', 'rb') as f:
+with open('./hash-mac-serial-0001-1000.csv', 'rb') as f:
     serials = csv.reader(f)
     for row in serials:
         s.append([row[0], row[1], row[2]])
@@ -23,6 +23,7 @@ for i in range(int(sys.argv[1]), int(sys.argv[2]) + 1):
     serial = s[i][2]
     hostname = 'rascal' + serial[2:6].lstrip('0')
 
+    print 'Building binary with these parameters: hostname: {0}, mac: {1}, hash: {2}'.format(hostname, mac, pwhash) 
     bootargs ='\'#define CONFIG_RASCAL_BOOTARGS "console=ttyS0,115200 ip=::::{0}:: pwhash={1}"\''.format(hostname, pwhash)
     ethaddr = '\'#define CONFIG_RASCAL_ETHADDR {0}\''.format(mac)
 
@@ -30,8 +31,9 @@ for i in range(int(sys.argv[1]), int(sys.argv[2]) + 1):
         'cp include/configs/rascal.h rascal.h.orig',
         'echo ' + bootargs + ' >> include/configs/rascal.h',
         'echo ' + ethaddr + ' >> include/configs/rascal.h',
+        # 'touch u-boot.bin'
         'make distclean; make rascal_config; make all',
-        'cp u-boot.bin ~/Desktop/Dropbox/Rascal/Software/useful-binaries/u-boot-{0}.bin'.format(serial.lower()),
+        'cp u-boot.bin ~/u-boot-{0}.bin'.format(serial.lower()),
         'cp rascal.h.orig include/configs/rascal.h',
     ]
     for cmd in commands:
