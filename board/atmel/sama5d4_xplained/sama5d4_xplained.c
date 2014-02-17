@@ -111,6 +111,7 @@ vidinfo_t panel_info = {
 	.vl_row = 272,
 	.vl_clk = 9000000,
 	.vl_bpix = LCD_BPP,
+	.vl_bpix = LCD_OUTPUT_BPP,
 	.vl_tft = 1,
 	.vl_hsync_len = 41,
 	.vl_left_margin = 2,
