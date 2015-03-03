@@ -386,7 +386,7 @@ static void macb_phy_reset(struct macb_device *macb)
 		status = macb_mdio_read(macb, MII_BMSR);
 		if (status & BMSR_ANEGCOMPLETE)
 			break;
-		udelay(100);
+		mdelay(30);
 	}
 
 	if (status & BMSR_ANEGCOMPLETE)
