@@ -152,6 +152,14 @@
 #define CONFIG_ATMEL_LCD_RGB565
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
 
+/* Software (bit-bang) I2C */
+#define CONFIG_CMD_I2C
+#define CONFIG_SYS_I2C
+#define CONFIG_SYS_I2C_SOFT
+#define CONFIG_SYS_I2C_SOFT_SPEED	50000
+#define CONFIG_SOFT_I2C_GPIO_SCL	GPIO_PIN_PA(31)
+#define CONFIG_SOFT_I2C_GPIO_SDA	GPIO_PIN_PA(30)
+
 #ifdef CONFIG_SYS_USE_SERIALFLASH
 /* bootstrap + u-boot + env + linux in serial flash */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
