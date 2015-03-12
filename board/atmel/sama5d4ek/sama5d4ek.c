@@ -24,6 +24,7 @@
 #include <nand.h>
 #include <spi.h>
 #include <version.h>
+#include <act8865.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -299,6 +300,15 @@ int board_init(void)
 #endif
 #ifdef CONFIG_USB_GADGET_ATMEL_USBA
 	at91_udp_hw_init();
+#endif
+#ifdef CONFIG_ACT8865_POWER
+	if (act8865_i2c_interface_accessable()) {
+		act8865_enable_ldo_output(ACT8865_LDO_REG5, ACT8865_3V3_VOLT);
+		act8865_enable_ldo_output(ACT8865_LDO_REG6, ACT8865_1V8_VOLT);
+#ifdef CONFIG_ACT8865_DISABLE_I2C_INTERFACE
+		act8865_disable_i2c_interface();
+#endif
+	}
 #endif
 
 	return 0;
