@@ -26,6 +26,7 @@
 #include <nand.h>
 #include <spi.h>
 #include <version.h>
+#include <act8865.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -305,6 +306,15 @@ int board_init(void)
 #endif
 #ifdef CONFIG_USB_GADGET_ATMEL_USBA
 	at91_udp_hw_init();
+#endif
+#ifdef CONFIG_ACT8865_POWER
+	if (i2c_set_bus_num(1)) {
+		printf("I2C:   failed to switch bus 1\n");
+	} else {
+		if (act8865_i2c_interface_accessable())
+			act8865_enable_ldo_output(ACT8865_LDO_REG5,
+						  ACT8865_3V3_VOLT);
+	}
 #endif
 
 	return 0;
