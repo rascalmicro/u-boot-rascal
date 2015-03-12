@@ -26,6 +26,8 @@
 #define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_DISPLAY_CPUINFO
 
+#define CONFIG_ACT8865_POWER
+
 #define CONFIG_CMD_BOOTZ
 #define CONFIG_OF_LIBFDT		/* Device Tree support */
 
