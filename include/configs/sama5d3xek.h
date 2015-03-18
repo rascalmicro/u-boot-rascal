@@ -161,8 +161,6 @@
 #endif
 
 /* USB */
-#define CONFIG_CMD_USB
-
 #ifdef CONFIG_CMD_USB
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_ATMEL
