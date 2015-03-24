@@ -18,6 +18,7 @@
 #include <asm/arch/sama5d4.h>
 #include <atmel_hlcdc.h>
 #include <atmel_mci.h>
+#include <i2c.h>
 #include <lcd.h>
 #include <mmc.h>
 #include <net.h>
@@ -333,6 +334,32 @@ int board_eth_init(bd_t *bis)
 
 	return rc;
 }
+
+#ifdef CONFIG_SYS_I2C_SOFT
+int get_soft_i2c_scl_pin(void)
+{
+	switch (I2C_ADAP_HWNR) {
+	case 0:
+		return GPIO_PIN_PA(31);
+	case 3:
+		return GPIO_PIN_PC(26);
+	default:
+		return -1;
+	}
+}
+
+int get_soft_i2c_sda_pin(void)
+{
+	switch (I2C_ADAP_HWNR) {
+	case 0:
+		return GPIO_PIN_PA(30);
+	case 3:
+		return GPIO_PIN_PC(25);
+	default:
+		return -1;
+	}
+}
+#endif
 
 /* SPL */
 #ifdef CONFIG_SPL_BUILD

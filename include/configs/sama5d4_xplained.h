@@ -160,6 +160,24 @@
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
 #endif
 
+/* Software (bit-bang) I2C */
+#define CONFIG_CMD_I2C
+
+#define CONFIG_SYS_I2C
+#define CONFIG_SYS_I2C_SOFT
+#define CONFIG_SYS_I2C_SOFT_SPEED	50000
+#define CONFIG_SYS_I2C_SOFT_SLAVE	0x00
+#define I2C_SOFT_DECLARATIONS4
+#define CONFIG_SYS_I2C_SOFT_SPEED_4     50000
+#define CONFIG_SYS_I2C_SOFT_SLAVE_4     0x00
+
+#ifndef __ASSEMBLY__
+int get_soft_i2c_scl_pin(void);
+int get_soft_i2c_sda_pin(void);
+#endif
+#define CONFIG_SOFT_I2C_GPIO_SCL	get_soft_i2c_scl_pin()
+#define CONFIG_SOFT_I2C_GPIO_SDA	get_soft_i2c_sda_pin()
+
 #ifdef CONFIG_SYS_USE_SERIALFLASH
 /* bootstrap + u-boot + env + linux in serial flash */
 #define CONFIG_ENV_IS_IN_SPI_FLASH
