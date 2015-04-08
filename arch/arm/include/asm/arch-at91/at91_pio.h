@@ -35,6 +35,7 @@
 #ifndef __ASSEMBLY__
 
 typedef struct at91_port {
+#if !defined(CPU_HAS_PIO4)
 	u32	per;		/* 0x00 PIO Enable Register */
 	u32	pdr;		/* 0x04 PIO Disable Register */
 	u32	psr;		/* 0x08 PIO Status Register */
@@ -107,6 +108,24 @@ typedef struct at91_port {
 #else
 	u32	reserved6[85];
 #endif
+#else
+	u32	s_mskr;		/* 0x00 Secure PIO Mask Register */
+	u32	s_cfgr;		/* 0x04 Secure PIO Configuration Register */
+	u32	s_pdsr;		/* 0x08 Secure PIO Pin Data Status Register */
+	u32	s_locksr;	/* 0x0C Secure PIO Lock Status Register */
+	u32	s_sodr;		/* 0x10 Secure PIO Set Output Data Register */
+	u32	s_codr;		/* 0x14 Secure PIO Clear Output Data Register */
+	u32	s_odsr;		/* 0x18 Secure PIO Output Data Status Register */
+	u32	reserved0;
+	u32	s_ier;		/* 0x20 Secure PIO Interrupt Enable Register */
+	u32	s_idr;		/* 0x24 Secure PIO Interrupt Disable Register */
+	u32	s_imr;		/* 0x28 Secure PIO Interrupt Mask Register */
+	u32	s_isr;		/* 0x2C Secure PIO Interrupt Status Register */
+	u32	s_sionr;	/* 0x30 Secure PIO Non-Secure Register */
+	u32	s_siosr;	/* 0x34 Secure PIO Secure Register */
+	u32	s_iossr;	/* 0x38 Secure PIO Secure Status Register */
+	u32	s_iofr;		/* 0x3c Secure PIO I/O Freeze Register */
+#endif
 } at91_port_t;
 
 typedef union at91_pio {
@@ -124,12 +143,46 @@ typedef union at91_pio {
 	at91_port_t port[ATMEL_PIO_PORTS];
 } at91_pio_t;
 
+
+#define	AT91_PIO_CFGR_FUNC	(0x07 << 0)
+#define		AT91_PIO_CFGR_FUNC_GPIO		(0x0 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_A	(0x1 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_B	(0x2 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_C	(0x3 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_D	(0x4 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_E	(0x5 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_F	(0x6 << 0)
+#define		AT91_PIO_CFGR_FUNC_PERIPH_G	(0x7 << 0)
+#define	AT91_PIO_CFGR_DIR	(0x01 << 8)
+#define	AT91_PIO_CFGR_PUEN	(0x01 << 9)
+#define	AT91_PIO_CFGR_PDEN	(0x01 << 10)
+#define	AT91_PIO_CFGR_IFEN	(0x01 << 12)
+#define	AT91_PIO_CFGR_IFSCEN	(0x01 << 13)
+#define	AT91_PIO_CFGR_OPD	(0x01 << 14)
+#define	AT91_PIO_CFGR_SCHMITT	(0x01 << 15)
+#define	AT91_PIO_CFGR_DRVSTR	(0x03 << 16)
+#define		AT91_PIO_CFGR_DRVSTR_HIGH	(0x00 << 16)
+#define		AT91_PIO_CFGR_DRVSTR_MEDIUM	(0x01 << 16)
+#define		AT91_PIO_CFGR_DRVSTR_LOW	(0x02 << 16)
+#define	AT91_PIO_CFGR_EVTSEL	(0x07 << 24)
+#define		AT91_PIO_CFGR_EVTSEL_FALLING	(0x00 << 24)
+#define		AT91_PIO_CFGR_EVTSEL_RISING	(0x01 << 24)
+#define		AT91_PIO_CFGR_EVTSEL_BOTH	(0x02 << 24)
+#define		AT91_PIO_CFGR_EVTSEL_LOW	(0x03 << 24)
+#define		AT91_PIO_CFGR_EVTSEL_HIGH	(0x04 << 24)
+#define	AT91_PIO_CFGR_PCFS	(0x01 << 29)
+#define	AT91_PIO_CFGR_ICFS	(0x01 << 30)
+#define	AT91_PIO_CFGR_TAMPEN	(0x01 << 31)
+
 #ifdef CONFIG_AT91_GPIO
 int at91_set_a_periph(unsigned port, unsigned pin, int use_pullup);
 int at91_set_b_periph(unsigned port, unsigned pin, int use_pullup);
-#if defined(CPU_HAS_PIO3)
 int at91_set_c_periph(unsigned port, unsigned pin, int use_pullup);
 int at91_set_d_periph(unsigned port, unsigned pin, int use_pullup);
+int at91_set_e_periph(unsigned port, unsigned pin, int use_pullup);
+int at91_set_f_periph(unsigned port, unsigned pin, int use_pullup);
+int at91_set_g_periph(unsigned port, unsigned pin, int use_pullup);
+#if defined(CPU_HAS_PIO3)
 int at91_set_pio_debounce(unsigned port, unsigned pin, int is_on, int div);
 int at91_set_pio_pulldown(unsigned port, unsigned pin, int is_on);
 int at91_set_pio_disable_schmitt_trig(unsigned port, unsigned pin);

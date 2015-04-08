@@ -42,6 +42,7 @@ static struct at91_port *at91_pio_get_port(unsigned port)
 	}
 }
 
+#if !defined(CPU_HAS_PIO4)
 static void at91_set_port_pullup(struct at91_port *at91_port, unsigned offset,
 				 int use_pullup)
 {
@@ -64,6 +65,23 @@ int at91_set_pio_pullup(unsigned port, unsigned pin, int use_pullup)
 
 	return 0;
 }
+#endif
+
+static int pio4_set_pio_func(struct at91_port *at91_port, u32 mask,
+					unsigned func, int use_pullup)
+{
+	u32 reg_value = func;
+
+	writel(mask, &at91_port->s_siosr);
+
+	reg_value |= use_pullup ? AT91_PIO_CFGR_PUEN : 0;
+
+	writel(mask, &at91_port->s_mskr);
+	writel(reg_value, &at91_port->s_cfgr);
+
+	return 0;
+}
+
 
 /*
  * mux the pin to the "GPIO" peripheral role.
@@ -75,9 +93,15 @@ int at91_set_pio_periph(unsigned port, unsigned pin, int use_pullup)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO4)
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_GPIO, use_pullup))
+			return -1;
+#else
 		writel(mask, &at91_port->idr);
 		at91_set_pio_pullup(port, pin, use_pullup);
 		writel(mask, &at91_port->per);
+#endif
 	}
 
 	return 0;
@@ -93,6 +117,11 @@ int at91_set_a_periph(unsigned port, unsigned pin, int use_pullup)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO4)
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_A, use_pullup))
+			return -1;
+#else
 		writel(mask, &at91_port->idr);
 		at91_set_pio_pullup(port, pin, use_pullup);
 #if defined(CPU_HAS_PIO3)
@@ -104,6 +133,7 @@ int at91_set_a_periph(unsigned port, unsigned pin, int use_pullup)
 		writel(mask, &at91_port->asr);
 #endif
 		writel(mask, &at91_port->pdr);
+#endif
 	}
 
 	return 0;
@@ -119,6 +149,11 @@ int at91_set_b_periph(unsigned port, unsigned pin, int use_pullup)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO4)
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_B, use_pullup))
+			return -1;
+#else
 		writel(mask, &at91_port->idr);
 		at91_set_pio_pullup(port, pin, use_pullup);
 #if defined(CPU_HAS_PIO3)
@@ -130,12 +165,12 @@ int at91_set_b_periph(unsigned port, unsigned pin, int use_pullup)
 		writel(mask, &at91_port->bsr);
 #endif
 		writel(mask, &at91_port->pdr);
+#endif
 	}
 
 	return 0;
 }
 
-#if defined(CPU_HAS_PIO3)
 /*
  * mux the pin to the "C" internal peripheral role.
  */
@@ -146,6 +181,8 @@ int at91_set_c_periph(unsigned port, unsigned pin, int use_pullup)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO3)
 		writel(mask, &at91_port->idr);
 		at91_set_pio_pullup(port, pin, use_pullup);
 		writel(readl(&at91_port->abcdsr1) & ~mask,
@@ -153,6 +190,10 @@ int at91_set_c_periph(unsigned port, unsigned pin, int use_pullup)
 		writel(readl(&at91_port->abcdsr2) | mask,
 		       &at91_port->abcdsr2);
 		writel(mask, &at91_port->pdr);
+#elif defined(CPU_HAS_PIO4)
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_C, use_pullup))
+			return -1;
+#endif
 	}
 
 	return 0;
@@ -168,6 +209,8 @@ int at91_set_d_periph(unsigned port, unsigned pin, int use_pullup)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO3)
 		writel(mask, &at91_port->idr);
 		at91_set_pio_pullup(port, pin, use_pullup);
 		writel(readl(&at91_port->abcdsr1) | mask,
@@ -175,11 +218,65 @@ int at91_set_d_periph(unsigned port, unsigned pin, int use_pullup)
 		writel(readl(&at91_port->abcdsr2) | mask,
 		       &at91_port->abcdsr2);
 		writel(mask, &at91_port->pdr);
+#elif defined(CPU_HAS_PIO4)
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_D, use_pullup))
+			return -1;
+#endif
 	}
 
 	return 0;
 }
+
+/*
+ * mux the pin to the "E" internal peripheral role.
+ */
+int at91_set_e_periph(unsigned port, unsigned pin, int use_pullup)
+{
+#if defined(CPU_HAS_PIO4)
+	struct at91_port *at91_port = at91_pio_get_port(port);
+	u32 mask = 1 << pin;
+
+	if (at91_port && (pin < GPIO_PER_BANK)) {
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_E, use_pullup))
+			return -1;
+	}
 #endif
+	return 0;
+}
+
+/*
+ * mux the pin to the "F" internal peripheral role.
+ */
+int at91_set_f_periph(unsigned port, unsigned pin, int use_pullup)
+{
+#if defined(CPU_HAS_PIO4)
+	struct at91_port *at91_port = at91_pio_get_port(port);
+	u32 mask = 1 << pin;
+
+	if (at91_port && (pin < GPIO_PER_BANK)) {
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_F, use_pullup))
+			return -1;
+	}
+#endif
+	return 0;
+}
+
+/*
+ * mux the pin to the "G" internal peripheral role.
+ */
+int at91_set_g_periph(unsigned port, unsigned pin, int use_pullup)
+{
+#if defined(CPU_HAS_PIO4)
+	struct at91_port *at91_port = at91_pio_get_port(port);
+	u32 mask = 1 << pin;
+
+	if (at91_port && (pin < GPIO_PER_BANK)) {
+		if (pio4_set_pio_func(at91_port, mask, AT91_PIO_CFGR_FUNC_PERIPH_G, use_pullup))
+			return -1;
+	}
+#endif
+	return 0;
+}
 
 #ifdef CONFIG_DM_GPIO
 static bool at91_get_port_output(struct at91_port *at91_port, int offset)
@@ -198,10 +295,22 @@ static void at91_set_port_input(struct at91_port *at91_port, int offset,
 	u32 mask;
 
 	mask = 1 << offset;
+
+#if defined(CPU_HAS_PIO4)
+	u32 reg_value = AT91_PIO_CFGR_FUNC_GPIO;
+
+	/* Is the PIO secure status Secure? */
+	writel(mask, &at91_port->s_siosr);
+
+	reg_value |= use_pullup ? AT91_PIO_CFGR_PUEN : 0;
+	writel(mask, &at91_port->s_mskr);
+	writel(reg_value, &at91_port->s_cfgr);
+#else
 	writel(mask, &at91_port->idr);
 	at91_set_port_pullup(at91_port, offset, use_pullup);
 	writel(mask, &at91_port->odr);
 	writel(mask, &at91_port->per);
+#endif
 }
 
 /*
@@ -224,6 +333,17 @@ static void at91_set_port_output(struct at91_port *at91_port, int offset,
 	u32 mask;
 
 	mask = 1 << offset;
+
+#if defined(CPU_HAS_PIO4)
+	writel(mask, &at91_port->s_siosr);
+
+	writel(mask, &at91_port->s_mskr);
+	writel((AT91_PIO_CFGR_FUNC_GPIO | AT91_PIO_CFGR_DIR), &at91_port->s_cfgr);
+	if (value)
+		writel(mask, &at91_port->s_sodr);
+	else
+		writel(mask, &at91_port->s_codr);
+#else
 	writel(mask, &at91_port->idr);
 	writel(mask, &at91_port->pudr);
 	if (value)
@@ -232,6 +352,7 @@ static void at91_set_port_output(struct at91_port *at91_port, int offset,
 		writel(mask, &at91_port->codr);
 	writel(mask, &at91_port->oer);
 	writel(mask, &at91_port->per);
+#endif
 }
 
 /*
@@ -258,6 +379,21 @@ int at91_set_pio_deglitch(unsigned port, unsigned pin, int is_on)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO4)
+		writel(mask, &at91_port->s_siosr);
+
+		writel(mask, &at91_port->s_mskr);
+		if (is_on) { 
+			writel((readl(&at91_port->s_cfgr)
+				& (~AT91_PIO_CFGR_IFSCEN)) | AT91_PIO_CFGR_IFEN,
+				&at91_port->s_cfgr);
+		} else {
+			writel(readl(&at91_port->s_cfgr)
+				& (~AT91_PIO_CFGR_IFEN), &at91_port->s_cfgr);
+		}
+#else
+
 		if (is_on) {
 #if defined(CPU_HAS_PIO3)
 			writel(mask, &at91_port->ifscdr);
@@ -266,6 +402,7 @@ int at91_set_pio_deglitch(unsigned port, unsigned pin, int is_on)
 		} else {
 			writel(mask, &at91_port->ifdr);
 		}
+#endif
 	}
 
 	return 0;
@@ -275,6 +412,8 @@ int at91_set_pio_deglitch(unsigned port, unsigned pin, int is_on)
 /*
  * enable/disable the debounce filter.
  */
+
+/* REVIST_PIO4 */
 int at91_set_pio_debounce(unsigned port, unsigned pin, int is_on, int div)
 {
 	struct at91_port *at91_port = at91_pio_get_port(port);
@@ -298,6 +437,7 @@ int at91_set_pio_debounce(unsigned port, unsigned pin, int is_on, int div)
  * enable/disable the pull-down.
  * If pull-up already enabled while calling the function, we disable it.
  */
+/* REVIST_PIO4 */
 int at91_set_pio_pulldown(unsigned port, unsigned pin, int is_on)
 {
 	struct at91_port *at91_port = at91_pio_get_port(port);
@@ -318,6 +458,7 @@ int at91_set_pio_pulldown(unsigned port, unsigned pin, int is_on)
 /*
  * disable Schmitt trigger
  */
+/* REVIST_PIO4 */
 int at91_set_pio_disable_schmitt_trig(unsigned port, unsigned pin)
 {
 	struct at91_port *at91_port = at91_pio_get_port(port);
@@ -344,10 +485,24 @@ int at91_set_pio_multi_drive(unsigned port, unsigned pin, int is_on)
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
 		mask = 1 << pin;
+
+#if defined(CPU_HAS_PIO4)
+		writel(mask, &at91_port->s_siosr);
+
+		writel(mask, &at91_port->s_mskr);
+		if (is_on) {
+			writel(readl(&at91_port->s_cfgr)
+				| AT91_PIO_CFGR_OPD, &at91_port->s_cfgr);
+		} else {
+			writel(readl(&at91_port->s_cfgr)
+				& (~AT91_PIO_CFGR_OPD), &at91_port->s_cfgr);
+		}
+#else
 		if (is_on)
 			writel(mask, &at91_port->mder);
 		else
 			writel(mask, &at91_port->mddr);
+#endif
 	}
 
 	return 0;
@@ -359,10 +514,21 @@ static void at91_set_port_value(struct at91_port *at91_port, int offset,
 	u32 mask;
 
 	mask = 1 << offset;
+
+#if defined(CPU_HAS_PIO4)
+	writel(mask, &at91_port->s_siosr);
+
+	if (value)
+		writel(mask, &at91_port->s_sodr);
+	else
+		writel(mask, &at91_port->s_codr);
+#else
+
 	if (value)
 		writel(mask, &at91_port->sodr);
 	else
 		writel(mask, &at91_port->codr);
+#endif
 }
 
 /*
@@ -383,7 +549,14 @@ static int at91_get_port_value(struct at91_port *at91_port, int offset)
 	u32 pdsr = 0, mask;
 
 	mask = 1 << offset;
+
+#if defined(CPU_HAS_PIO4)
+	writel(mask, &at91_port->s_siosr);
+
+	pdsr = readl(&at91_port->s_pdsr) & mask;
+#else
 	pdsr = readl(&at91_port->pdsr) & mask;
+#endif
 
 	return pdsr != 0;
 }
