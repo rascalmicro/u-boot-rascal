@@ -152,11 +152,16 @@ void at91_periph_clk_enable(int id)
 {
 	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
 	u32 regval;
+	u32 div_value;
 
 	if (id > AT91_PMC_PCR_PID_MASK)
 		return;
 
-	regval = AT91_PMC_PCR_EN | AT91_PMC_PCR_CMD_WRITE | id;
+	writel(id, &pmc->pcr);
+
+	div_value = readl(&pmc->pcr) & AT91_PMC_PCR_DIV;
+
+	regval = AT91_PMC_PCR_EN | AT91_PMC_PCR_CMD_WRITE | id | div_value;
 
 	writel(regval, &pmc->pcr);
 }
