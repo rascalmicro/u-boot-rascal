@@ -18,6 +18,7 @@
 #include <asm/arch/sama5d4.h>
 #include <atmel_hlcdc.h>
 #include <atmel_mci.h>
+#include <i2c.h>
 #include <lcd.h>
 #include <mmc.h>
 #include <net.h>
@@ -25,6 +26,7 @@
 #include <nand.h>
 #include <spi.h>
 #include <version.h>
+#include <act8865.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -305,6 +307,15 @@ int board_init(void)
 #ifdef CONFIG_USB_GADGET_ATMEL_USBA
 	at91_udp_hw_init();
 #endif
+#ifdef CONFIG_ACT8865_POWER
+	if (i2c_set_bus_num(1)) {
+		printf("I2C:   failed to switch bus 1\n");
+	} else {
+		if (act8865_i2c_interface_accessable())
+			act8865_enable_ldo_output(ACT8865_LDO_REG5,
+						  ACT8865_3V3_VOLT);
+	}
+#endif
 
 	return 0;
 }
@@ -333,6 +344,32 @@ int board_eth_init(bd_t *bis)
 
 	return rc;
 }
+
+#ifdef CONFIG_SYS_I2C_SOFT
+int get_soft_i2c_scl_pin(void)
+{
+	switch (I2C_ADAP_HWNR) {
+	case 0:
+		return GPIO_PIN_PA(31);
+	case 3:
+		return GPIO_PIN_PC(26);
+	default:
+		return -1;
+	}
+}
+
+int get_soft_i2c_sda_pin(void)
+{
+	switch (I2C_ADAP_HWNR) {
+	case 0:
+		return GPIO_PIN_PA(30);
+	case 3:
+		return GPIO_PIN_PC(25);
+	default:
+		return -1;
+	}
+}
+#endif
 
 /* SPL */
 #ifdef CONFIG_SPL_BUILD
