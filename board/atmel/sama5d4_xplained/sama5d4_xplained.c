@@ -330,9 +330,32 @@ int dram_init(void)
 int board_eth_init(bd_t *bis)
 {
 	int rc = 0;
+	unsigned char buf[6];
 
 #ifdef CONFIG_MACB
 	rc = macb_eth_initialize(0, (void *)ATMEL_BASE_GMAC0, 0x00);
+	if (rc) {
+		printf("GMAC0 register failed\n");
+	} else {
+		if (!getenv("ethaddr")) {
+			/* Set I2C bus to 0 */
+			if (i2c_set_bus_num(0)) {
+				printf("i2c bus 0 is not valid\n");
+			} else {
+				/* Read MAC address */
+				if (i2c_read(0x5c, 0x9a, 1, buf, 6)) {
+					printf("MAC address read failed\n");
+				} else {
+					if (is_valid_ether_addr(buf)) {
+						eth_setenv_enetaddr("ethaddr",
+								    buf);
+					} else {
+						printf("MAC address is not valid\n");
+					}
+				}
+			}
+		}
+	}
 #endif
 
 #ifdef CONFIG_USB_GADGET_ATMEL_USBA
