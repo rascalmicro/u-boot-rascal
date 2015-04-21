@@ -215,6 +215,11 @@
 				"setenv conf_name $mb_name; "	\
 			"else "					\
 				"setenv conf_name $mb_name'_'$dm_type; "\
+				"if test $dm_type = pda4; then"	\
+				"	setenv video_mode video=LVDS-1:480x272-16; "\
+				"else "				\
+				"	setenv video_mode video=LVDS-1:800x480-16; "\
+				"fi; "				\
 			"fi; "					\
 		"fi; "						\
 		"setenv fdtfile $conf_name'.dtb'; \0"
@@ -228,6 +233,7 @@
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"sf probe 0; " \
 				"sf read 0x22000000 0x42000 0x380000; " \
+				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #elif CONFIG_SYS_USE_NANDFLASH
 /* bootstrap + u-boot + env in nandflash */
@@ -237,6 +243,7 @@
 #define CONFIG_ENV_SIZE			0x20000
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"nand read 0x22000000 0x200000 0x600000; " \
+				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #elif CONFIG_SYS_USE_MMC
 /* bootstrap + u-boot + env in sd card */
@@ -247,6 +254,7 @@
 #define CONFIG_ENV_SIZE		0x4000
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"fatload mmc 0:1 0x22000000 sama5d3xek.itb; " \
+				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #else
 #define CONFIG_ENV_IS_NOWHERE
