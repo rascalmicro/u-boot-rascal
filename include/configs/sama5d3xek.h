@@ -186,12 +186,26 @@
 #define CONFIG_SYS_LOAD_ADDR			0x22000000 /* load address */
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"findfdt="\
+	"set_mb_name="						\
 		"if test $mb_rev = 'c'; then "			\
 			"setenv mb_name $ek_name'_rev'$mb_rev; "\
 		"else "						\
 			"setenv mb_name $ek_name; "		\
+		"fi; \0"					\
+	"set_video_mode="					\
+		"if test $dm_type = undefined; then "		\
+			"setenv video_mode video=LVDS-1:800x480-16; "\
+		"else "						\
+			"if test $dm_type = pda4; then "	\
+				"setenv video_mode video=LVDS-1:480x272-16; "\
+			"fi; "					\
 		"fi; "						\
+		"if test $ek_name = sama5d35ek; then "		\
+			"setenv video_mode; "			\
+		"fi; \0"					\
+	"findfdt="						\
+		"run set_mb_name; "				\
+		"run set_video_mode; "				\
 		"if test $dm_type = undefined; then "		\
 			"setenv conf_name $mb_name; "		\
 		"else "						\
@@ -199,11 +213,6 @@
 				"setenv conf_name $mb_name; "	\
 			"else "					\
 				"setenv conf_name $mb_name'_'$dm_type; "\
-				"if test $dm_type = pda4; then"	\
-				"	setenv video_mode video=LVDS-1:480x272-16; "\
-				"else "				\
-				"	setenv video_mode video=LVDS-1:800x480-16; "\
-				"fi; "				\
 			"fi; "					\
 		"fi; "						\
 		"setenv fdtfile $conf_name'.dtb'; \0"
