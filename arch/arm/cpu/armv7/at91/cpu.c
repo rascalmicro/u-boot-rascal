@@ -16,6 +16,7 @@
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/at91_pit.h>
 #include <asm/arch/at91_gpbr.h>
+#include <asm/arch/at91_chipid.h>
 #include <asm/arch/clk.h>
 
 #ifndef CONFIG_SYS_AT91_MAIN_CLOCK
@@ -67,10 +68,22 @@ void enable_caches(void)
 
 unsigned int get_chip_id(void)
 {
+#if defined(ATMEL_BASE_CHIPID)
+	at91_chipid_t *chipid = (at91_chipid_t *)ATMEL_BASE_CHIPID;
+
+	return readl(&chipid->chipid_cidr);
+#else
 	return readl(ATMEL_BASE_DBGU + AT91_DBU_CIDR) & ~AT91_DBU_CIDR_MASK;
+#endif
 }
 
 unsigned int get_extension_chip_id(void)
 {
+#if defined(ATMEL_BASE_CHIPID)
+	at91_chipid_t *chipid = (at91_chipid_t *)ATMEL_BASE_CHIPID;
+
+	return readl(&chipid->chipid_exid);
+#else
 	return readl(ATMEL_BASE_DBGU + AT91_DBU_EXID);
+#endif
 }
