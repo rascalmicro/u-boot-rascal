@@ -150,7 +150,12 @@ typedef struct at91_pmc {
 #define AT91_PMC_IXR_PCKRDY3		0x00000800
 #define AT91_PMC_IXR_MOSCSELS		0x00010000
 
+#if defined(CONFIG_SAMA5D2)
+#define AT91_PMC_PCR_PID_MASK		(0x7f)
+#else
 #define AT91_PMC_PCR_PID_MASK		(0x3f)
+#endif
+
 #define AT91_PMC_PCR_CMD_WRITE		(0x1 << 12)
 #define	AT91_PMC_PCR_DIV		(0x3 << 16)
 #define AT91_PMC_PCR_EN			(0x1 << 28)
