@@ -14,6 +14,7 @@
 #include <asm/arch/clk.h>
 #include <asm/arch/sama5d3_smc.h>
 #include <asm/arch/sama5d2.h>
+#include <asm/arch/atmel_sdhci.h>
 #include <atmel_hlcdc.h>
 #include <lcd.h>
 #include <mmc.h>
@@ -168,6 +169,30 @@ static void board_gmac_hw_init(void)
 }
 #endif
 
+#ifdef CONFIG_ATMEL_SDHCI
+static void board_sdhci_hw_init(void)
+{
+	/* SDHCI1 */
+	at91_set_e_periph(AT91_PIO_PORTA, 18, 0);	/* SDMMC1_DAT0 */
+	at91_set_e_periph(AT91_PIO_PORTA, 19, 0);	/* SDMMC1_DAT1 */
+	at91_set_e_periph(AT91_PIO_PORTA, 20, 0);	/* SDMMC1_DAT2 */
+	at91_set_e_periph(AT91_PIO_PORTA, 21, 0);	/* SDMMC1_DAT3 */
+	at91_set_e_periph(AT91_PIO_PORTA, 22, 0);	/* SDMMC1_CK */
+	at91_set_e_periph(AT91_PIO_PORTA, 27, 0);	/* SDMMC1_RSTN */
+	at91_set_e_periph(AT91_PIO_PORTA, 28, 0);	/* SDMMC1_CMD */
+	at91_set_e_periph(AT91_PIO_PORTA, 29, 0);	/* SDMMC1_WP */
+	at91_set_e_periph(AT91_PIO_PORTA, 30, 0);	/* SDMMC1_CD */
+
+	at91_periph_clk_enable(ATMEL_ID_SDHCI1);
+	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI1);
+}
+
+int board_mmc_init(bd_t *bis)
+{
+	return atmel_sdhci_init((void *)ATMEL_BASE_SDHCI1);
+}
+#endif
+
 static void board_uart1_hw_init(void)
 {
 	at91_set_a_periph(AT91_PIO_PORTD, 2, 1);	/* URXD1 */
@@ -195,6 +220,9 @@ int board_init(void)
 
 #ifdef CONFIG_ATMEL_SPI
 	board_spi0_hw_init();
+#endif
+#ifdef CONFIG_ATMEL_SDHCI
+	board_sdhci_hw_init();
 #endif
 #ifdef CONFIG_MACB
 	board_gmac_hw_init();
