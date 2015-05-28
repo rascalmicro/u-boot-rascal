@@ -155,10 +155,20 @@ typedef struct at91_pmc {
 #else
 #define AT91_PMC_PCR_PID_MASK		(0x3f)
 #endif
+#define	AT91_PMC_PCR_GCKCSS		(0x7 << 8)
+#define		AT91_PMC_PCR_GCKCSS_SLOW_CLK	(0x0 << 8)
+#define		AT91_PMC_PCR_GCKCSS_MAIN_CLK	(0x1 << 8)
+#define		AT91_PMC_PCR_GCKCSS_PLLA_CLK	(0x2 << 8)
+#define		AT91_PMC_PCR_GCKCSS_UPLL_CLK	(0x3 << 8)
+#define		AT91_PMC_PCR_GCKCSS_MCK_CLK	(0x4 << 8)
+#define		AT91_PMC_PCR_GCKCSS_AUDIO_CLK	(0x5 << 8)
 
 #define AT91_PMC_PCR_CMD_WRITE		(0x1 << 12)
 #define	AT91_PMC_PCR_DIV		(0x3 << 16)
+#define	AT91_PMC_PCR_GCKDIV		(0xff << 20)
+#define		AT91_PMC_PCR_GCKDIV_(x)		((x) << 20)
 #define AT91_PMC_PCR_EN			(0x1 << 28)
+#define AT91_PMC_PCR_GCKEN		(0x1 << 29)
 
 #define		AT91_PMC_PCK		(1 <<  0)		/* Processor Clock */
 #define		AT91RM9200_PMC_UDP	(1 <<  1)		/* USB Devcice Port Clock [AT91RM9200 only] */

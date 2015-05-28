@@ -178,3 +178,23 @@ void at91_periph_clk_disable(int id)
 
 	writel(regval, &pmc->pcr);
 }
+
+void atmel_enable_periph_generated_clk(int id)
+{
+	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
+	unsigned int regval;
+
+	if (id > AT91_PMC_PCR_PID_MASK)
+		return;
+
+	writel(id, &pmc->pcr);
+	regval = readl(&pmc->pcr);
+	regval &= ~AT91_PMC_PCR_GCKCSS;
+	regval &= ~AT91_PMC_PCR_GCKDIV;
+	regval |= AT91_PMC_PCR_GCKCSS_MAIN_CLK
+			| AT91_PMC_PCR_CMD_WRITE
+			| AT91_PMC_PCR_GCKDIV_(0)
+			| AT91_PMC_PCR_GCKEN;
+
+	writel(regval, &pmc->pcr);
+}
