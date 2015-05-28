@@ -6,6 +6,7 @@
  */
 
 #include <common.h>
+#include <i2c.h>
 #include <mmc.h>
 #include <asm/io.h>
 #include <asm/arch/sama5d3_smc.h>
@@ -22,6 +23,101 @@
 #include <asm/arch/at91_wdt.h>
 
 DECLARE_GLOBAL_DATA_PTR;
+
+#if defined(CONFIG_AT24MAC)
+void at91_sync_env_enetaddr(uint8_t *ethaddr, uint8_t adapter)
+{
+	uint8_t env_ethaddr[6];
+	int ret;
+
+	ret = eth_getenv_enetaddr_by_index("eth", adapter, env_ethaddr);
+
+	if (!ret) {
+		/* init MAC address from EEPROM */
+                debug("### Setting environment from EEPROM MAC address = "
+                        "\"%pM\"\n",
+                        env_ethaddr);
+		if (adapter == 0) {
+			ret = !eth_setenv_enetaddr("ethaddr", ethaddr);
+		} else if (adapter == 1) {
+			ret = !eth_setenv_enetaddr("eth1addr", ethaddr);
+		}
+        }
+
+	if (!ret) {
+                printf("Failed to set mac address from EEPROM: %d\n", ret);
+	}
+}
+
+static int at91_read_at24mac_oui(uint8_t addr, uint8_t *buf)
+{
+	if (i2c_read(addr, 0x9a, 1, (uint8_t*)&buf[0], 6)) {
+		printf("Read from EEPROM @ 0x%02x failed\n", addr);
+		return 0;
+	} else {
+		/* Check that MAC address is valid. */
+		if (!is_valid_ether_addr(buf)) {
+			printf("Found invalid MAC address: %d:%d:%d:%d:%d:%d\r\n", 
+				buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
+			return 0;
+		}
+	}
+	/* found valid MAC! */
+	return 1;
+}
+
+#endif
+
+int misc_init_r(void)
+{
+#if defined(CONFIG_AT24MAC)
+	int eeprom_mac_read;
+	uint8_t env_ethaddr[6];
+	uint8_t ethaddr[6];
+	int ethaddr_found;
+
+	ethaddr_found = eth_getenv_enetaddr("ethaddr", env_ethaddr);
+	eeprom_mac_read = at91_read_at24mac_oui(CONFIG_AT24MAC_ADDR, ethaddr);
+
+	if (!ethaddr_found) {
+		if (eeprom_mac_read) {
+			/* set MAC address from AT24MAC*/
+			at91_sync_env_enetaddr(ethaddr, 0);
+		} 
+	} else {
+		/* MAC address already in environment,
+		 * compare with EEPROM and warn on mismatch
+		 */
+		if (eeprom_mac_read && memcmp(ethaddr, env_ethaddr, 6)) {
+			printf("Warning: ethaddr MAC from AT24MAC doesn't match env\r\n");
+			printf("Using MAC from environment\r\n");
+		}
+
+	}
+
+#if CONFIG_AT24MAC_CNT == 2
+	ethaddr_found = eth_getenv_enetaddr("eth1addr", env_ethaddr);
+	eeprom_mac_read = at91_read_at24mac_oui(CONFIG_AT24MAC_ADDR1, ethaddr);
+
+	if (!ethaddr_found) {
+		if (eeprom_mac_read) {
+			/* set MAC address from AT24MAC*/
+			at91_sync_env_enetaddr(ethaddr, 1);
+		}
+	} else {
+		/* MAC address already in environment,
+		 * compare with EEPROM and warn on mismatch
+		 */
+		if (eeprom_mac_read && memcmp(ethaddr, env_ethaddr, 6)) {
+			printf("Warning: eth1addr MAC from AT24MAC doesn't match env\r\n");
+			printf("Using MAC from environment\r\n");
+		}
+
+	}
+#endif
+#endif
+	return 0;
+}
 
 #ifdef CONFIG_NAND_ATMEL
 void sama5d3_xplained_nand_hw_init(void)
