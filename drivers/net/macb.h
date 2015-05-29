@@ -60,6 +60,18 @@
 
 /* GEM specific register offsets */
 #define GEM_DCFG1				0x0280
+#define GEM_DCFG6				0x0294
+
+#define MACB_MAX_QUEUES				8
+
+/* GEM specific multi queues register offset */
+/* hw_q can be 0~7 */
+#define GEM_ISR(hw_q)				(0x0400 + ((hw_q) << 2))
+#define GEM_TBQP(hw_q)				(0x0440 + ((hw_q) << 2))
+#define GEM_RBQP(hw_q)				(0x0480 + ((hw_q) << 2))
+#define GEM_IER(hw_q)				(0x0600 + ((hw_q) << 2))
+#define GEM_IDR(hw_q)				(0x0620 + ((hw_q) << 2))
+#define GEM_IMR(hw_q)				(0x0640 + ((hw_q) << 2))
 
 /* Bitfields in NCR */
 #define MACB_LB_OFFSET				0
@@ -309,5 +321,7 @@
 	readl((port)->regs + GEM_##reg)
 #define gem_writel(port, reg, value)			\
 	writel((value), (port)->regs + GEM_##reg)
+#define gem_writel_queue_TBQP(port, value, queue_num)	\
+	writel((value), (port)->regs + GEM_TBQP(queue_num))
 
 #endif /* __DRIVERS_MACB_H__ */
