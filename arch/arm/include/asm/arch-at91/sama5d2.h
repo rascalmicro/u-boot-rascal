@@ -221,6 +221,7 @@
 #define ATMEL_PIO_PORTS		4
 #define CPU_HAS_PIO4
 #define CPU_HAS_PCR
+#define CPU_HAS_H32MXDIV
 
 /* sama5d2 series chip id definitions */
 #define ARCH_ID_SAMA5D2		0x8a5c08c0
