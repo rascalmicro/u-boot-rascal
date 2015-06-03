@@ -65,8 +65,8 @@ int at91_set_pio_pullup(unsigned port, unsigned pin, int use_pullup)
 
 	return 0;
 }
-#endif
 
+#else
 static int pio4_set_pio_func(struct at91_port *at91_port, u32 mask,
 					unsigned func, int use_pullup)
 {
@@ -81,6 +81,7 @@ static int pio4_set_pio_func(struct at91_port *at91_port, u32 mask,
 
 	return 0;
 }
+#endif
 
 
 /*
