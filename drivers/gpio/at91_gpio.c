@@ -72,12 +72,10 @@ static int pio4_set_pio_func(struct at91_port *at91_port, u32 mask,
 {
 	u32 reg_value = func;
 
-	writel(mask, &at91_port->s_siosr);
-
 	reg_value |= use_pullup ? AT91_PIO_CFGR_PUEN : 0;
 
-	writel(mask, &at91_port->s_mskr);
-	writel(reg_value, &at91_port->s_cfgr);
+	writel(mask, &at91_port->mskr);
+	writel(reg_value, &at91_port->cfgr);
 
 	return 0;
 }
@@ -235,6 +233,7 @@ int at91_set_e_periph(unsigned port, unsigned pin, int use_pullup)
 {
 #if defined(CPU_HAS_PIO4)
 	struct at91_port *at91_port = at91_pio_get_port(port);
+
 	u32 mask = 1 << pin;
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
@@ -252,6 +251,7 @@ int at91_set_f_periph(unsigned port, unsigned pin, int use_pullup)
 {
 #if defined(CPU_HAS_PIO4)
 	struct at91_port *at91_port = at91_pio_get_port(port);
+
 	u32 mask = 1 << pin;
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
@@ -269,6 +269,7 @@ int at91_set_g_periph(unsigned port, unsigned pin, int use_pullup)
 {
 #if defined(CPU_HAS_PIO4)
 	struct at91_port *at91_port = at91_pio_get_port(port);
+
 	u32 mask = 1 << pin;
 
 	if (at91_port && (pin < GPIO_PER_BANK)) {
@@ -300,12 +301,9 @@ static void at91_set_port_input(struct at91_port *at91_port, int offset,
 #if defined(CPU_HAS_PIO4)
 	u32 reg_value = AT91_PIO_CFGR_FUNC_GPIO;
 
-	/* Is the PIO secure status Secure? */
-	writel(mask, &at91_port->s_siosr);
-
 	reg_value |= use_pullup ? AT91_PIO_CFGR_PUEN : 0;
-	writel(mask, &at91_port->s_mskr);
-	writel(reg_value, &at91_port->s_cfgr);
+	writel(mask, &at91_port->mskr);
+	writel(reg_value, &at91_port->cfgr);
 #else
 	writel(mask, &at91_port->idr);
 	at91_set_port_pullup(at91_port, offset, use_pullup);
@@ -336,14 +334,12 @@ static void at91_set_port_output(struct at91_port *at91_port, int offset,
 	mask = 1 << offset;
 
 #if defined(CPU_HAS_PIO4)
-	writel(mask, &at91_port->s_siosr);
-
-	writel(mask, &at91_port->s_mskr);
-	writel((AT91_PIO_CFGR_FUNC_GPIO | AT91_PIO_CFGR_DIR), &at91_port->s_cfgr);
+	writel(mask, &at91_port->mskr);
+	writel((AT91_PIO_CFGR_FUNC_GPIO | AT91_PIO_CFGR_DIR), &at91_port->cfgr);
 	if (value)
-		writel(mask, &at91_port->s_sodr);
+		writel(mask, &at91_port->sodr);
 	else
-		writel(mask, &at91_port->s_codr);
+		writel(mask, &at91_port->codr);
 #else
 	writel(mask, &at91_port->idr);
 	writel(mask, &at91_port->pudr);
@@ -382,16 +378,14 @@ int at91_set_pio_deglitch(unsigned port, unsigned pin, int is_on)
 		mask = 1 << pin;
 
 #if defined(CPU_HAS_PIO4)
-		writel(mask, &at91_port->s_siosr);
-
-		writel(mask, &at91_port->s_mskr);
+		writel(mask, &at91_port->mskr);
 		if (is_on) { 
-			writel((readl(&at91_port->s_cfgr)
+			writel((readl(&at91_port->cfgr)
 				& (~AT91_PIO_CFGR_IFSCEN)) | AT91_PIO_CFGR_IFEN,
-				&at91_port->s_cfgr);
+				&at91_port->cfgr);
 		} else {
-			writel(readl(&at91_port->s_cfgr)
-				& (~AT91_PIO_CFGR_IFEN), &at91_port->s_cfgr);
+			writel(readl(&at91_port->cfgr)
+				& (~AT91_PIO_CFGR_IFEN), &at91_port->cfgr);
 		}
 #else
 
@@ -488,15 +482,13 @@ int at91_set_pio_multi_drive(unsigned port, unsigned pin, int is_on)
 		mask = 1 << pin;
 
 #if defined(CPU_HAS_PIO4)
-		writel(mask, &at91_port->s_siosr);
-
-		writel(mask, &at91_port->s_mskr);
+		writel(mask, &at91_port->mskr);
 		if (is_on) {
-			writel(readl(&at91_port->s_cfgr)
-				| AT91_PIO_CFGR_OPD, &at91_port->s_cfgr);
+			writel(readl(&at91_port->cfgr)
+				| AT91_PIO_CFGR_OPD, &at91_port->cfgr);
 		} else {
-			writel(readl(&at91_port->s_cfgr)
-				& (~AT91_PIO_CFGR_OPD), &at91_port->s_cfgr);
+			writel(readl(&at91_port->cfgr)
+				& (~AT91_PIO_CFGR_OPD), &at91_port->cfgr);
 		}
 #else
 		if (is_on)
@@ -516,20 +508,10 @@ static void at91_set_port_value(struct at91_port *at91_port, int offset,
 
 	mask = 1 << offset;
 
-#if defined(CPU_HAS_PIO4)
-	writel(mask, &at91_port->s_siosr);
-
-	if (value)
-		writel(mask, &at91_port->s_sodr);
-	else
-		writel(mask, &at91_port->s_codr);
-#else
-
 	if (value)
 		writel(mask, &at91_port->sodr);
 	else
 		writel(mask, &at91_port->codr);
-#endif
 }
 
 /*
@@ -551,13 +533,7 @@ static int at91_get_port_value(struct at91_port *at91_port, int offset)
 
 	mask = 1 << offset;
 
-#if defined(CPU_HAS_PIO4)
-	writel(mask, &at91_port->s_siosr);
-
-	pdsr = readl(&at91_port->s_pdsr) & mask;
-#else
 	pdsr = readl(&at91_port->pdsr) & mask;
-#endif
 
 	return pdsr != 0;
 }

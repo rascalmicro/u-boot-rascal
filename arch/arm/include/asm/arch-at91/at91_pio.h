@@ -109,22 +109,19 @@ typedef struct at91_port {
 	u32	reserved6[85];
 #endif
 #else
-	u32	s_mskr;		/* 0x00 Secure PIO Mask Register */
-	u32	s_cfgr;		/* 0x04 Secure PIO Configuration Register */
-	u32	s_pdsr;		/* 0x08 Secure PIO Pin Data Status Register */
-	u32	s_locksr;	/* 0x0C Secure PIO Lock Status Register */
-	u32	s_sodr;		/* 0x10 Secure PIO Set Output Data Register */
-	u32	s_codr;		/* 0x14 Secure PIO Clear Output Data Register */
-	u32	s_odsr;		/* 0x18 Secure PIO Output Data Status Register */
+	u32	mskr;		/* 0x00 PIO Mask Register */
+	u32	cfgr;		/* 0x04 PIO Configuration Register */
+	u32	pdsr;		/* 0x08 PIO Pin Data Status Register */
+	u32	locksr;		/* 0x0C PIO Lock Status Register */
+	u32	sodr;		/* 0x10 PIO Set Output Data Register */
+	u32	codr;		/* 0x14 PIO Clear Output Data Register */
+	u32	odsr;		/* 0x18 PIO Output Data Status Register */
 	u32	reserved0;
-	u32	s_ier;		/* 0x20 Secure PIO Interrupt Enable Register */
-	u32	s_idr;		/* 0x24 Secure PIO Interrupt Disable Register */
-	u32	s_imr;		/* 0x28 Secure PIO Interrupt Mask Register */
-	u32	s_isr;		/* 0x2C Secure PIO Interrupt Status Register */
-	u32	s_sionr;	/* 0x30 Secure PIO Non-Secure Register */
-	u32	s_siosr;	/* 0x34 Secure PIO Secure Register */
-	u32	s_iossr;	/* 0x38 Secure PIO Secure Status Register */
-	u32	s_iofr;		/* 0x3c Secure PIO I/O Freeze Register */
+	u32	ier;		/* 0x20 PIO Interrupt Enable Register */
+	u32	idr;		/* 0x24 PIO Interrupt Disable Register */
+	u32	imr;		/* 0x28 PIO Interrupt Mask Register */
+	u32	isr;		/* 0x2C PIO Interrupt Status Register */
+	u32	iofr;		/* 0x3c PIO I/O Freeze Register */
 #endif
 } at91_port_t;
 
