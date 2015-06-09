@@ -149,11 +149,11 @@
 #define CONFIG_ENV_SPI_BUS	CONFIG_SF_DEFAULT_BUS
 #define CONFIG_ENV_SPI_CS	CONFIG_SF_DEFAULT_CS
 #define CONFIG_ENV_OFFSET       0x4000
-#define CONFIG_ENV_SIZE         0x3000
+#define CONFIG_ENV_SIZE         0x4000
 #define CONFIG_ENV_SECT_SIZE    0x1000
 #define CONFIG_BOOTCOMMAND      "sf probe 0; " \
-				"sf read 0x21000000 0xa0000 0x60000; " \
-				"sf read 0x22000000 0x100000 0x300000; " \
+				"sf read 0x21000000 0x60000 0xc000; " \
+				"sf read 0x22000000 0x6c000 0x394000; " \
 				"bootz 0x22000000 - 0x21000000"
 #elif CONFIG_SYS_USE_MMC
 /* bootstrap + u-boot + env in sd card */
