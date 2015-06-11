@@ -57,9 +57,8 @@ static void board_spi0_hw_init(void)
 #ifdef CONFIG_CMD_USB
 static void board_usb_hw_init(void)
 {
-/* REVIST */
-//	at91_set_pio_output(AT91_PIO_PORTE, 11, 1);
-//	at91_set_pio_output(AT91_PIO_PORTE, 14, 1);
+	at91_set_pio_output(AT91_PIO_PORTB, 9, 1);
+	at91_set_pio_output(AT91_PIO_PORTB, 10, 1);
 }
 #endif
 
