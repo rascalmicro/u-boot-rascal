@@ -7,6 +7,6 @@
 #ifndef	ATMEL_SDHCI_H
 #define	ATMEL_SDHCI_H
 
-int atmel_sdhci_init(void *regbase);
+int atmel_sdhci_init(void *regbase, int id);
 
 #endif

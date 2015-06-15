@@ -8,10 +8,12 @@
 #include <common.h>
 #include <malloc.h>
 #include <sdhci.h>
+#include <asm/arch/clk.h>
 
-int atmel_sdhci_init(void *regbase)
+int atmel_sdhci_init(void *regbase, int id)
 {
 	struct sdhci_host *host = NULL;
+	unsigned int max_clk;
 
 	host = (struct sdhci_host *)malloc(sizeof(struct sdhci_host));
 	if (!host) {
@@ -26,7 +28,9 @@ int atmel_sdhci_init(void *regbase)
 
 	host->host_caps = MMC_MODE_HC;
 
-	add_sdhci(host, 0, 0);
+	max_clk = at91_get_generated_clk(id);
+
+	add_sdhci(host, max_clk, 400000);
 
 	return 0;
 }
