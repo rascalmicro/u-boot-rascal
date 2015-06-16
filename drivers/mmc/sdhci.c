@@ -133,7 +133,7 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 	int trans_bytes = 0, is_aligned = 1;
 	u32 mask, flags, mode;
 	unsigned int time = 0, start_addr = 0;
-	unsigned int retry = 10000;
+	unsigned int retry = 100000;
 	int mmc_dev = mmc->block_dev.dev;
 
 	/* Timeout unit - ms */
@@ -145,7 +145,7 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 	/* We shouldn't wait for data inihibit for stop commands, even
 	   though they might use busy signaling */
 	if (cmd->cmdidx == MMC_CMD_STOP_TRANSMISSION)
-		mask &= ~SDHCI_DATA_INHIBIT;
+		mask &= SDHCI_DATA_INHIBIT;
 
 	while (sdhci_readl(host, SDHCI_PRESENT_STATE) & mask) {
 		if (time >= cmd_timeout) {
@@ -226,6 +226,7 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
 			break;
 		if (--retry == 0)
 			break;
+		udelay(10);
 	} while ((stat & mask) != mask);
 
 	if (retry == 0) {
