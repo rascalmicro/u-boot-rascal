@@ -191,9 +191,9 @@ void atmel_enable_periph_generated_clk(int id)
 	regval = readl(&pmc->pcr);
 	regval &= ~AT91_PMC_PCR_GCKCSS;
 	regval &= ~AT91_PMC_PCR_GCKDIV;
-	regval |= AT91_PMC_PCR_GCKCSS_MAIN_CLK
+	regval |= AT91_PMC_PCR_GCKCSS_PLLA_CLK
 			| AT91_PMC_PCR_CMD_WRITE
-			| AT91_PMC_PCR_GCKDIV_(0)
+			| AT91_PMC_PCR_GCKDIV_(1)
 			| AT91_PMC_PCR_GCKEN;
 
 	writel(regval, &pmc->pcr);
