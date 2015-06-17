@@ -166,6 +166,8 @@ typedef struct at91_pmc {
 #define AT91_PMC_PCR_CMD_WRITE		(0x1 << 12)
 #define	AT91_PMC_PCR_DIV		(0x3 << 16)
 #define	AT91_PMC_PCR_GCKDIV		(0xff << 20)
+#define	AT91_PMC_PCR_GCKDIV_MSK			0xff
+#define	AT91_PMC_PCR_GCKDIV_OFFSET		20
 #define		AT91_PMC_PCR_GCKDIV_(x)		((x) << 20)
 #define AT91_PMC_PCR_EN			(0x1 << 28)
 #define AT91_PMC_PCR_GCKEN		(0x1 << 29)

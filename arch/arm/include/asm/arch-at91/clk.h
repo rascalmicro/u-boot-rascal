@@ -120,5 +120,6 @@ int at91_clock_init(unsigned long main_clock);
 void at91_periph_clk_enable(int id);
 void at91_periph_clk_disable(int id);
 void atmel_enable_periph_generated_clk(int id);
+u32 at91_get_generated_clk(int id);
 
 #endif /* __ASM_ARM_ARCH_CLK_H__ */

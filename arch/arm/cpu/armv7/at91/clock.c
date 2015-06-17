@@ -198,3 +198,37 @@ void atmel_enable_periph_generated_clk(int id)
 
 	writel(regval, &pmc->pcr);
 }
+
+u32 at91_get_generated_clk(int id)
+{
+	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
+	u32 regval, clock_source, div;
+	u32 freq = 0;
+
+	if (id > AT91_PMC_PCR_PID_MASK)
+		return 0;
+
+	writel(id, &pmc->pcr);
+	regval = readl(&pmc->pcr);
+
+	clock_source = regval & AT91_PMC_PCR_GCKCSS;
+	switch (clock_source) {
+	case AT91_PMC_PCR_GCKCSS_SLOW_CLK:
+		freq = CONFIG_SYS_AT91_SLOW_CLOCK;
+		break;
+	case AT91_PMC_PCR_GCKCSS_MAIN_CLK:
+		freq = gd->arch.main_clk_rate_hz;
+		break;
+	case AT91_PMC_PCR_GCKCSS_PLLA_CLK:
+		freq = gd->arch.plla_rate_hz;
+		break;
+	default:
+		break;
+	}
+
+	div = ((regval >> AT91_PMC_PCR_GCKDIV_OFFSET)
+			& AT91_PMC_PCR_GCKDIV_MSK);
+	div += 1;
+
+	return freq / div;
+}
