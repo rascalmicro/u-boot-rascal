@@ -23,7 +23,6 @@ int atmel_sdhci_init(void *regbase)
 	host->ioaddr = (void *)regbase;
 	host->quirks = 0;
 	host->version = sdhci_readw(host, SDHCI_HOST_VERSION);
-	host->voltages = MMC_VDD_32_33 | MMC_VDD_33_34 | MMC_VDD_165_195;
 
 	host->host_caps = MMC_MODE_HC;
 
