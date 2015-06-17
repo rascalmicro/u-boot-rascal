@@ -271,8 +271,14 @@ static int sdhci_set_clock(struct mmc *mmc, unsigned int clock)
 {
 	struct sdhci_host *host = mmc->priv;
 	unsigned int div, clk = 0, timeout;
+	u32 reg;
 
-	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+	while (sdhci_readl(host, SDHCI_PRESENT_STATE) & (SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT))
+		;
+
+	reg = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+	reg &= ~SDHCI_CLOCK_CARD_EN;
+	sdhci_writew(host, reg, SDHCI_CLOCK_CONTROL);
 
 	if (clock == 0)
 		return 0;
