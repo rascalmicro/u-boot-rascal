@@ -204,8 +204,8 @@ static void board_sdhci1_hw_init(void)
 
 int board_mmc_init(bd_t *bis)
 {
-	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI0);
-	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI1);
+	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI0, ATMEL_ID_SDHCI0);
+	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI1, ATMEL_ID_SDHCI1);
 
 	return 0;
 }
