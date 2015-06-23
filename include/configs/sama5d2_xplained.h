@@ -175,11 +175,11 @@
 
 #ifdef CONFIG_SYS_USE_MMC
 #define CONFIG_BOOTARGS							\
-	"console=ttyS0,115200 earlyprintk "				\
+	"console=ttyS0,57600 earlyprintk "				\
 	"root=/dev/mmcblk0p2 rw rootwait"
 #else
 #define CONFIG_BOOTARGS							\
-	"console=ttyS0,115200 earlyprintk "				\
+	"console=ttyS0,57600 earlyprintk "				\
 	"mtdparts=atmel_nand:256k(bootstrap)ro,512k(uboot)ro,"		\
 	"256K(env),256k(evn_redundent),256k(spare),"			\
 	"512k(dtb),6M(kernel)ro,-(rootfs) "				\
