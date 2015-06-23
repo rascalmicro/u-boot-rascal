@@ -179,7 +179,6 @@ static void board_sdhci_hw_init(void)
 	at91_set_e_periph(AT91_PIO_PORTA, 22, 0);	/* SDMMC1_CK */
 	at91_set_e_periph(AT91_PIO_PORTA, 27, 0);	/* SDMMC1_RSTN */
 	at91_set_e_periph(AT91_PIO_PORTA, 28, 0);	/* SDMMC1_CMD */
-	at91_set_e_periph(AT91_PIO_PORTA, 29, 0);	/* SDMMC1_WP */
 	at91_set_e_periph(AT91_PIO_PORTA, 30, 0);	/* SDMMC1_CD */
 
 	at91_periph_clk_enable(ATMEL_ID_SDHCI1);
