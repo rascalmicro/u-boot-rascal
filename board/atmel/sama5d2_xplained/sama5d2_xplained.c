@@ -135,7 +135,7 @@ void lcd_show_board_info(void)
 	char temp[32];
 
 	lcd_printf("%s\n", U_BOOT_VERSION);
-	lcd_printf("2014 ATMEL Corp\n");
+	lcd_printf("2015 ATMEL Corp\n");
 	lcd_printf("%s CPU at %s MHz\n", get_cpu_name(),
 		   strmhz(temp, get_cpu_clk_rate()));
 
@@ -147,7 +147,6 @@ void lcd_show_board_info(void)
 
 }
 #endif /* CONFIG_LCD_INFO */
-
 #endif /* CONFIG_LCD */
 
 #ifdef CONFIG_MACB

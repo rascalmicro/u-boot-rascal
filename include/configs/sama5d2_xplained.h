@@ -130,7 +130,7 @@
 #define CONFIG_MACB_SEARCH_PHY
 
 /* LCD */
-/* #define CONFIG_LCD */
+ #define CONFIG_LCD
 #ifdef CONFIG_LCD
 #define LCD_BPP				LCD_COLOR16
 #define LCD_OUTPUT_BPP                  24
