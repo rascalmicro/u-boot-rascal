@@ -98,6 +98,7 @@
 #define CONFIG_GENERIC_MMC
 #define CONFIG_SDHCI
 #define CONFIG_ATMEL_SDHCI
+#define CONFIG_SUPPORT_EMMC_BOOT
 #endif
 
 /* USB */
