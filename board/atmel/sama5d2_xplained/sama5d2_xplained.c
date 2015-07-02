@@ -12,7 +12,6 @@
 #include <asm/arch/atmel_usba_udc.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/clk.h>
-#include <asm/arch/sama5d3_smc.h>
 #include <asm/arch/sama5d2.h>
 #include <asm/arch/atmel_sdhci.h>
 #include <atmel_hlcdc.h>
@@ -20,7 +19,6 @@
 #include <mmc.h>
 #include <net.h>
 #include <netdev.h>
-#include <nand.h>
 #include <spi.h>
 #include <version.h>
 
