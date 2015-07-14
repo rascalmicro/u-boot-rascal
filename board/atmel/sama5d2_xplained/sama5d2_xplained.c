@@ -52,6 +52,20 @@ static void board_spi0_hw_init(void)
 }
 #endif /* CONFIG_ATMEL_SPI */
 
+#ifdef CONFIG_ATMEL_QSPI
+static void board_qspi_hw_init(void)
+{
+	at91_set_f_periph(AT91_PIO_PORTA, 22, 0);
+	at91_set_f_periph(AT91_PIO_PORTA, 23, 0);
+	at91_set_f_periph(AT91_PIO_PORTA, 24, 0);
+	at91_set_f_periph(AT91_PIO_PORTA, 25, 0);
+	at91_set_f_periph(AT91_PIO_PORTA, 26, 0);
+	at91_set_f_periph(AT91_PIO_PORTA, 27, 0);
+
+	at91_periph_clk_enable(ATMEL_ID_QSPI0);
+}
+#endif
+
 #ifdef CONFIG_CMD_USB
 static void board_usb_hw_init(void)
 {
@@ -244,6 +258,9 @@ int board_init(void)
 
 #ifdef CONFIG_ATMEL_SPI
 	board_spi0_hw_init();
+#endif
+#ifdef CONFIG_ATMEL_QSPI
+	board_qspi_hw_init();
 #endif
 #ifdef CONFIG_ATMEL_SDHCI
 #ifdef CONFIG_ATMEL_SDHCI0
