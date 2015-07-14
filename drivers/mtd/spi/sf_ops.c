@@ -174,6 +174,7 @@ int spi_flash_cmd_wait_ready(struct spi_flash *flash, unsigned long timeout)
 	if (spi->flags & SPI_XFER_U_PAGE)
 		flags |= SPI_XFER_U_PAGE;
 #endif
+#ifndef CONFIG_QSPI
 	ret = spi_xfer(spi, 8, &cmd, NULL, flags);
 	if (ret) {
 		debug("SF: fail to read %s status register\n",
@@ -181,11 +182,18 @@ int spi_flash_cmd_wait_ready(struct spi_flash *flash, unsigned long timeout)
 		return ret;
 	}
 
+#endif
 	timebase = get_timer(0);
 	do {
 		WATCHDOG_RESET();
 
+#ifdef CONFIG_QSPI
+		flags = flags;
+
+		ret = qspi_send_command(spi, &cmd, 1, NULL, &status, 1);
+#else
 		ret = spi_xfer(spi, 8, NULL, &status, 0);
+#endif
 		if (ret)
 			return -1;
 
@@ -194,7 +202,9 @@ int spi_flash_cmd_wait_ready(struct spi_flash *flash, unsigned long timeout)
 
 	} while (get_timer(timebase) < timeout);
 
+#ifndef CONFIG_QSPI
 	spi_xfer(spi, 0, NULL, NULL, SPI_XFER_END);
+#endif
 
 	if ((status & poll_bit) == check_status)
 		return 0;
@@ -368,6 +378,7 @@ int spi_flash_cmd_read_ops(struct spi_flash *flash, u32 offset,
 	int bank_sel = 0;
 	int ret = -1;
 
+#ifndef CONFIG_QSPI
 	/* Handle memory-mapped SPI */
 	if (flash->memory_map) {
 		ret = spi_claim_bus(flash->spi);
@@ -381,6 +392,7 @@ int spi_flash_cmd_read_ops(struct spi_flash *flash, u32 offset,
 		spi_release_bus(flash->spi);
 		return 0;
 	}
+#endif
 
 	cmdsz = SPI_FLASH_CMD_LEN + flash->dummy_byte;
 	cmd = calloc(1, cmdsz);

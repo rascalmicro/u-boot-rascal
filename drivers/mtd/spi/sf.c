@@ -15,8 +15,12 @@ static int spi_flash_read_write(struct spi_slave *spi,
 				const u8 *data_out, u8 *data_in,
 				size_t data_len)
 {
-	unsigned long flags = SPI_XFER_BEGIN;
 	int ret;
+
+#ifdef CONFIG_QSPI
+	ret = qspi_send_command(spi, cmd, cmd_len, data_out, data_in, data_len);
+#else
+	unsigned long flags = SPI_XFER_BEGIN;
 
 #ifdef CONFIG_SF_DUAL_FLASH
 	if (spi->flags & SPI_XFER_U_PAGE)
@@ -37,6 +41,7 @@ static int spi_flash_read_write(struct spi_slave *spi,
 			      data_len, ret);
 	}
 
+#endif
 	return ret;
 }
 
