@@ -4,3 +4,24 @@ config DM_SPI
 	help
 	  If you want to use driver model for SPI drivers, say Y.
 	  To use legacy SPI drivers, say N.
+
+choice
+	prompt "Atmel SPI Select"
+	depends on TARGET_SAMA5D2_XPLAINED
+	default ATMEL_SPI
+
+config ATMEL_SPI
+	bool "Atmel Standard SPI Interface"
+	help
+	  If you want to use standard SPI driver, select it.
+
+config ATMEL_QSPI
+	bool "Atmel Quad SPI Interface"
+	select QSPI
+	help
+	  If you want to use QSPI driver, select it.
+
+endchoice
+
+config QSPI
+	bool
