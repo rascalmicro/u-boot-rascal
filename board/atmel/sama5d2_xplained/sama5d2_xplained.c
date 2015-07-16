@@ -166,6 +166,7 @@ static void board_gmac_hw_init(void)
 #endif
 
 #ifdef CONFIG_ATMEL_SDHCI
+#ifdef CONFIG_ATMEL_SDHCI0
 static void board_sdhci0_hw_init(void)
 {
 	at91_set_a_periph(AT91_PIO_PORTA, 0, 0);	/* SDMMC0_CK */
@@ -184,7 +185,9 @@ static void board_sdhci0_hw_init(void)
 	at91_periph_clk_enable(ATMEL_ID_SDHCI0);
 	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI0);
 }
+#endif
 
+#ifdef CONFIG_ATMEL_SDHCI1
 static void board_sdhci1_hw_init(void)
 {
 	at91_set_e_periph(AT91_PIO_PORTA, 18, 0);	/* SDMMC1_DAT0 */
@@ -199,11 +202,16 @@ static void board_sdhci1_hw_init(void)
 	at91_periph_clk_enable(ATMEL_ID_SDHCI1);
 	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI1);
 }
+#endif
 
 int board_mmc_init(bd_t *bis)
 {
+#ifdef CONFIG_ATMEL_SDHCI0
 	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI0, ATMEL_ID_SDHCI0);
+#endif
+#ifdef CONFIG_ATMEL_SDHCI1
 	atmel_sdhci_init((void *)ATMEL_BASE_SDHCI1, ATMEL_ID_SDHCI1);
+#endif
 
 	return 0;
 }
@@ -238,8 +246,12 @@ int board_init(void)
 	board_spi0_hw_init();
 #endif
 #ifdef CONFIG_ATMEL_SDHCI
+#ifdef CONFIG_ATMEL_SDHCI0
 	board_sdhci0_hw_init();
+#endif
+#ifdef CONFIG_ATMEL_SDHCI1
 	board_sdhci1_hw_init();
+#endif
 #endif
 #ifdef CONFIG_MACB
 	board_gmac_hw_init();
