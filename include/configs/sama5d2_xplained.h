@@ -169,7 +169,7 @@
 #define FAT_ENV_DEVICE_AND_PART	"0"
 #define FAT_ENV_FILE		"uboot.env"
 #define CONFIG_ENV_SIZE		0x4000
-#define CONFIG_BOOTCOMMAND	"fatload mmc 0:1 0x21000000 at91-sama5d4_xplained.dtb; " \
+#define CONFIG_BOOTCOMMAND	"fatload mmc 0:1 0x21000000 at91-sama5d2_xplained.dtb; " \
 				"fatload mmc 0:1 0x22000000 zImage; " \
 				"bootz 0x22000000 - 0x21000000"
 #endif
