@@ -169,18 +169,18 @@
  * the first partition; it no partition table, then take whole device as a
  * FAT file system.
  */
-#define FAT_ENV_DEVICE_AND_PART	"0"
+#define FAT_ENV_DEVICE_AND_PART	"1"
 #define FAT_ENV_FILE		"uboot.env"
 #define CONFIG_ENV_SIZE		0x4000
-#define CONFIG_BOOTCOMMAND	"fatload mmc 0:1 0x21000000 at91-sama5d2_xplained.dtb; " \
-				"fatload mmc 0:1 0x22000000 zImage; " \
+#define CONFIG_BOOTCOMMAND	"fatload mmc 1:1 0x21000000 at91-sama5d2_xplained.dtb; " \
+				"fatload mmc 1:1 0x22000000 zImage; " \
 				"bootz 0x22000000 - 0x21000000"
 #endif
 
 #ifdef CONFIG_SYS_USE_MMC
 #define CONFIG_BOOTARGS							\
 	"console=ttyS0,57600 earlyprintk "				\
-	"root=/dev/mmcblk0p2 rw rootwait"
+	"root=/dev/mmcblk1p2 rw rootwait"
 #else
 #define CONFIG_BOOTARGS							\
 	"console=ttyS0,57600 earlyprintk "				\
