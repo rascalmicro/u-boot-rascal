@@ -186,11 +186,9 @@
 				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #elif CONFIG_SYS_USE_NANDFLASH
+/* override the bootcmd, bootargs and other configuration nandflash env */
 /* bootstrap + u-boot + env in nandflash */
-#define CONFIG_ENV_IS_IN_NAND
-#define CONFIG_ENV_OFFSET		0xc0000
-#define CONFIG_ENV_OFFSET_REDUND	0x100000
-#define CONFIG_ENV_SIZE			0x20000
+#undef	CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"nand read 0x22000000 0x200000 0x600000; " \
 				"setenv bootargs $bootargs $video_mode;" \
