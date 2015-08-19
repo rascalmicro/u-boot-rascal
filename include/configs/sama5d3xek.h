@@ -196,12 +196,10 @@
 				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #elif CONFIG_SYS_USE_MMC
+/* override the bootcmd, bootargs and other configuration for sd/mmc env */
+
 /* bootstrap + u-boot + env in sd card */
-#define CONFIG_ENV_IS_IN_FAT
-#define FAT_ENV_INTERFACE	"mmc"
-#define FAT_ENV_FILE		"uboot.env"
-#define FAT_ENV_DEVICE_AND_PART	"0"
-#define CONFIG_ENV_SIZE		0x4000
+#undef	CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"fatload mmc 0:1 0x22000000 sama5d3xek.itb; " \
 				"setenv bootargs $bootargs $video_mode;" \
