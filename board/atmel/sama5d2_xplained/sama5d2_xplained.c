@@ -69,7 +69,6 @@ static void board_qspi_hw_init(void)
 #ifdef CONFIG_CMD_USB
 static void board_usb_hw_init(void)
 {
-	at91_set_pio_output(AT91_PIO_PORTB, 9, 1);
 	at91_set_pio_output(AT91_PIO_PORTB, 10, 1);
 }
 #endif
