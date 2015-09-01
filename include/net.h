@@ -115,8 +115,8 @@ extern struct eth_device *eth_get_dev_by_name(const char *devname);
 extern struct eth_device *eth_get_dev_by_index(int index); /* get dev @ index */
 extern int eth_get_dev_index(void);		/* get the device index */
 extern void eth_parse_enetaddr(const char *addr, uchar *enetaddr);
-extern int eth_getenv_enetaddr(char *name, uchar *enetaddr);
-extern int eth_setenv_enetaddr(char *name, const uchar *enetaddr);
+extern int eth_getenv_enetaddr(const char *name, uchar *enetaddr);
+extern int eth_setenv_enetaddr(const char *name, const uchar *enetaddr);
 
 /*
  * Get the hardware address for an ethernet interface .
