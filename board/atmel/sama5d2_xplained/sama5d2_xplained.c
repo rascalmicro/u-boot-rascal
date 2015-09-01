@@ -15,6 +15,7 @@
 #include <asm/arch/sama5d2.h>
 #include <asm/arch/atmel_sdhci.h>
 #include <atmel_hlcdc.h>
+#include <i2c.h>
 #include <lcd.h>
 #include <mmc.h>
 #include <net.h>
@@ -292,12 +293,47 @@ int dram_init(void)
 	return 0;
 }
 
+/* Set MAC address which is read from EEPROM */
+int set_mac_addr_from_eeprom(int eeprom_addr, int reg)
+{
+	const int MAC_ADDR_LEN = 6;
+	unsigned char mac_addr[MAC_ADDR_LEN];
+	const char * ETHADDR_NAME = "ethaddr";
+
+	if (getenv(ETHADDR_NAME))
+		return 0;	/* No need to set mac address */
+
+	/* Set I2C bus to 0 */
+	if (i2c_set_bus_num(0)) {
+		printf("i2c bus 0 is not valid\n");
+		return -1;
+	}
+
+	if (i2c_read(eeprom_addr, reg, 1, mac_addr, MAC_ADDR_LEN)) {
+		printf("MAC address read failed from i2c addr: 0x%02x, reg: 0x%02x\n",
+				eeprom_addr, reg);
+		return -1;
+	}
+
+	if (!is_valid_ether_addr(mac_addr)) {
+		printf("MAC address read from EEPROM is not valid!\n");
+		return -1;
+	}
+
+	return eth_setenv_enetaddr(ETHADDR_NAME, mac_addr);
+}
+
 int board_eth_init(bd_t *bis)
 {
 	int rc = 0;
 
 #ifdef CONFIG_MACB
 	rc = macb_eth_initialize(0, (void *)ATMEL_BASE_GMAC, 0x00);
+	if (rc)
+		printf("GMAC register failed\n");
+	else
+		set_mac_addr_from_eeprom(CONFIG_AT24MAC_ADDR,
+					 CONFIG_AT24MAC_REG);
 #endif
 
 #ifdef CONFIG_USB_GADGET_ATMEL_USBA
