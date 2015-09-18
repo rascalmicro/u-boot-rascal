@@ -58,6 +58,13 @@
 #define CONFIG_CMD_SETEXPR
 
 #ifdef CONFIG_SYS_USE_MMC
+
+#ifdef CONFIG_ENV_IS_IN_MMC
+/* Use raw reserved sectors to save environment */
+#define CONFIG_ENV_OFFSET		0x2000
+#define CONFIG_ENV_SIZE			0x1000
+#define CONFIG_SYS_MMC_ENV_DEV		0
+#else
 /* u-boot env in sd/mmc card */
 #define CONFIG_ENV_IS_IN_FAT
 #define CONFIG_FAT_WRITE
@@ -65,6 +72,7 @@
 #define FAT_ENV_DEVICE_AND_PART	"0"
 #define FAT_ENV_FILE		"uboot.env"
 #define CONFIG_ENV_SIZE		0x4000
+#endif	/* CONFIG_ENV_IS_IN_MMC */
 
 #define CONFIG_BOOTCOMMAND	"fatload mmc 0:1 0x21000000 at91-${board_name}.dtb; " \
 				"fatload mmc 0:1 0x22000000 zImage; "	\
