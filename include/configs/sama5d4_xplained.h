@@ -135,15 +135,7 @@ int get_soft_i2c_sda_pin(void);
 #define CONFIG_SOFT_I2C_GPIO_SDA	get_soft_i2c_sda_pin()
 
 #ifdef CONFIG_SYS_USE_SERIALFLASH
-/* bootstrap + u-boot + env + linux in serial flash */
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x10000
-#define CONFIG_ENV_SIZE         0x10000
-#define CONFIG_ENV_SECT_SIZE    0x1000
-#define CONFIG_BOOTCOMMAND      "sf probe 0; " \
-				"sf read 0x21000000 0xa0000 0x60000; " \
-				"sf read 0x22000000 0x100000 0x300000; " \
-				"bootz 0x22000000 - 0x21000000"
+/* override the bootcmd, bootargs and other configuration for spi flash env */
 #elif CONFIG_SYS_USE_NANDFLASH
 /* override the bootcmd, bootargs and other configuration for nandflash env */
 #elif CONFIG_SYS_USE_MMC
@@ -196,7 +188,7 @@ int get_soft_i2c_sda_pin(void);
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
-#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x20000
+#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x8000
 
 #endif
 #endif

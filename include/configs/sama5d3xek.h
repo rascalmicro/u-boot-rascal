@@ -175,14 +175,12 @@
 		"setenv fdtfile $conf_name'.dtb'; \0"
 
 #ifdef CONFIG_SYS_USE_SERIALFLASH
+/* override the bootcmd, bootargs and other configuration for spi flash env*/
 /* bootstrap + u-boot + env + linux in serial flash */
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_OFFSET       0x5000
-#define CONFIG_ENV_SIZE         0x3000
-#define CONFIG_ENV_SECT_SIZE    0x1000
+#undef	CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND	"run findfdt; " \
 				"sf probe 0; " \
-				"sf read 0x22000000 0x42000 0x380000; " \
+				"sf read 0x22000000 0x6c000 0x394000; " \
 				"setenv bootargs $bootargs $video_mode;" \
 				"bootm 0x22000000#conf@$conf_name"
 #elif CONFIG_SYS_USE_NANDFLASH
@@ -250,7 +248,7 @@
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
-#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x8400
+#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x8000
 
 #endif
 
