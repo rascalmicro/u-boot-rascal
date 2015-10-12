@@ -214,7 +214,6 @@
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		(4 * 1024 * 1024)
 
-
 /* SPL */
 #define CONFIG_SPL_FRAMEWORK
 #define CONFIG_SPL_TEXT_BASE		0x200000
@@ -233,7 +232,7 @@
 #define CONFIG_SYS_MONITOR_LEN		(512 << 10)
 
 #ifdef CONFIG_SYS_USE_MMC
-#define CONFIG_SPL_LDSCRIPT		arch/arm/cpu/at91-common/u-boot-spl.lds
+#define CONFIG_SPL_LDSCRIPT		"arch/arm/cpu/at91-common/u-boot-spl.lds"
 #define CONFIG_SPL_MMC_SUPPORT
 #define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS	0x400
 #define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR 0x200
@@ -246,7 +245,7 @@
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
-#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x20000
+#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x8000
 #endif
 
 #endif

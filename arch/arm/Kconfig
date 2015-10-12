@@ -528,6 +528,7 @@ config TARGET_SAMA5D4EK
 config TARGET_SAMA5D2_XPLAINED
 	bool "Support sama5d2_xplained"
 	select CPU_V7
+	select SUPPORT_SPL
 
 config TARGET_BCM28155_AP
 	bool "Support bcm28155_ap"
