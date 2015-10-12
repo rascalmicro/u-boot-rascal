@@ -176,6 +176,9 @@
 #define CPU_HAS_PCR
 #define CPU_HAS_H32MXDIV
 
+/* AICREDIR Unlock Key */
+#define ATMEL_SFR_AICREDIR_KEY		0x5F67B102
+
 /* MATRIX0(H64MX) Slave IDs */
 #define H64MX_SLAVE_AXIMX_BRIDGE	0	/* Bridge from H64MX to AXIMX */
 #define H64MX_SLAVE_PERIPH_BRIDGE	1	/* H64MX Peripheral Bridge */
