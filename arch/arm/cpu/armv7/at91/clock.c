@@ -232,3 +232,10 @@ u32 at91_get_generated_clk(int id)
 
 	return freq / div;
 }
+
+void at91_system_clk_enable(int sys_clk)
+{
+	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
+
+	writel((0x1 << sys_clk), &pmc->scer);
+}

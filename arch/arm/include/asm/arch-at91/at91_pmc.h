@@ -68,6 +68,17 @@ typedef struct at91_pmc {
 
 #endif	/* end not assembly */
 
+/* Bit field in System Clock Enable/Disable/Status Register */
+#define AT91_PMC_SYS_CLK_PCK		0
+#define AT91_PMC_SYS_CLK_DDRCK		2
+#define AT91_PMC_SYS_CLK_LCDCK		3
+#define AT91_PMC_SYS_CLK_UHP		6
+#define AT91_PMC_SYS_CLK_UDP		7
+#define AT91_PMC_SYS_CLK_PCK0		8
+#define AT91_PMC_SYS_CLK_PCK1		9
+#define AT91_PMC_SYS_CLK_PCK2		10
+#define AT91_PMC_SYS_CLK_ISCCK		18
+
 #define AT91_PMC_MOR_MOSCEN		0x01
 #define AT91_PMC_MOR_OSCBYPASS		0x02
 #define AT91_PMC_MOR_MOSCRCEN		0x08
