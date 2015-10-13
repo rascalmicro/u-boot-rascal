@@ -12,6 +12,8 @@
 #include <asm/io.h>
 #include <asm/arch/atmel_mpddrc.h>
 
+#define SAMA5D3_MPDDRC_VERSION		0x140
+
 static inline void atmel_mpddr_op(int mode, u32 ram_address)
 {
 	struct atmel_mpddr *mpddr = (struct atmel_mpddr *)ATMEL_BASE_MPDDRC;
@@ -22,10 +24,13 @@ static inline void atmel_mpddr_op(int mode, u32 ram_address)
 
 static int ddr2_decodtype_is_seq(u32 cr)
 {
-#if defined(CONFIG_SAMA5D3) || defined(CONFIG_SAMA5D4)
-	if (cr & ATMEL_MPDDRC_CR_DECOD_INTERLEAVED)
+	struct atmel_mpddr *mpddr = (struct atmel_mpddr *)ATMEL_BASE_MPDDRC;
+	u16 version = readl(&mpddr->version) & 0xffff;
+
+	if ((version >= SAMA5D3_MPDDRC_VERSION) &&
+	    (cr & ATMEL_MPDDRC_CR_DECOD_INTERLEAVED))
 		return 0;
-#endif
+
 	return 1;
 }
 
