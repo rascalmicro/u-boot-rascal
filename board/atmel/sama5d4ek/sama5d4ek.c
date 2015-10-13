@@ -390,14 +390,13 @@ static void ddr2_conf(struct atmel_mpddr *ddr2)
 
 void mem_init(void)
 {
-	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
 	struct atmel_mpddr ddr2;
 
 	ddr2_conf(&ddr2);
 
 	/* enable MPDDR clock */
 	at91_periph_clk_enable(ATMEL_ID_MPDDRC);
-	writel(0x4, &pmc->scer);
+	at91_system_clk_enable(AT91_PMC_SYS_CLK_DDRCK);
 
 	/* DDRAM2 Controller initialize */
 	ddr2_init(ATMEL_BASE_DDRCS, &ddr2);
