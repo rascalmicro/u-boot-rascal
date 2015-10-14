@@ -12,11 +12,15 @@
 
 #include <asm/hardware.h>
 
+#ifndef CONFIG_SYS_TEXT_BASE
 #define CONFIG_SYS_TEXT_BASE		0x26f00000
+#endif
 
 /* ARM asynchronous clock */
 #define CONFIG_SYS_AT91_SLOW_CLOCK      32768
+#ifndef CONFIG_SYS_AT91_MAIN_CLOCK
 #define CONFIG_SYS_AT91_MAIN_CLOCK      12000000 /* from 12 MHz crystal */
+#endif
 
 #define CONFIG_ARCH_CPU_INIT
 
