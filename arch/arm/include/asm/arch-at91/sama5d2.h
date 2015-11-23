@@ -213,7 +213,7 @@
 #define	ATMEL_SYS_SCKCR		(ATMEL_BASE_SYSC + 0x50)
 #define	ATMEL_BASE_RTCC		(ATMEL_BASE_SYSC + 0xb0)
 
-#define ATMEL_BASE_SMC		(ATMEL_BASE_HSMC + 0x600)
+#define ATMEL_BASE_SMC		(ATMEL_BASE_HSMC + 0x700)
 
 /*
  * Other misc defines
