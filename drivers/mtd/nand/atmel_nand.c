@@ -821,7 +821,7 @@ static int atmel_pmecc_nand_init_params(struct nand_chip *nand,
 	 * from ONFI.
 	 */
 	if (pmecc_choose_ecc(host, nand, &cap, &sector_size)) {
-		dev_err(host->dev, "The NAND flash's ECC requirement(ecc_bits: %d, sector_size: %d) are not support!",
+		dev_err(host->dev, "The NAND flash's ECC requirement(ecc_bits: %d, sector_size: %d) are not support!\n",
 				cap, sector_size);
 		return -EINVAL;
 	}
