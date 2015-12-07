@@ -182,6 +182,9 @@ static void board_gmac_hw_init(void)
 
 #ifdef CONFIG_ATMEL_SDHCI
 #ifdef CONFIG_ATMEL_SDHCI0
+
+#define AT91_SDHCI0_GCKDIV_RATIO	1
+
 static void board_sdhci0_hw_init(void)
 {
 	at91_set_a_periph(AT91_PIO_PORTA, 0, 0);	/* SDMMC0_CK */
@@ -198,11 +201,16 @@ static void board_sdhci0_hw_init(void)
 	at91_set_a_periph(AT91_PIO_PORTA, 11, 0);	/* SDMMC0_VDDSEL */
 
 	at91_periph_clk_enable(ATMEL_ID_SDHCI0);
-	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI0);
+	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI0,
+					  GCK_CSS_PLLA_CLK,
+					  AT91_SDHCI0_GCKDIV_RATIO);
 }
 #endif
 
 #ifdef CONFIG_ATMEL_SDHCI1
+
+#define AT91_SDHCI1_GCKDIV_RATIO	1
+
 static void board_sdhci1_hw_init(void)
 {
 	at91_set_e_periph(AT91_PIO_PORTA, 18, 0);	/* SDMMC1_DAT0 */
@@ -215,7 +223,9 @@ static void board_sdhci1_hw_init(void)
 	at91_set_e_periph(AT91_PIO_PORTA, 30, 0);	/* SDMMC1_CD */
 
 	at91_periph_clk_enable(ATMEL_ID_SDHCI1);
-	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI1);
+	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI1,
+					  GCK_CSS_PLLA_CLK,
+					  AT91_SDHCI0_GCKDIV_RATIO);
 }
 #endif
 
