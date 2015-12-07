@@ -14,6 +14,7 @@
 #include <asm/arch/hardware.h>
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/clk.h>
+#include <asm/errno.h>
 
 #if !defined(CONFIG_AT91FAMILY)
 # error You need to define CONFIG_AT91FAMILY in your board config!
@@ -148,24 +149,67 @@ void at91_mck_init(u32 mckr)
 		;
 }
 
-void atmel_enable_periph_generated_clk(int id)
+int atmel_enable_periph_generated_clk(u32 id, u32 clk_source, u32 div)
 {
 	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
-	unsigned int regval;
+	u32 regval, status;
+	u32 timeout = 1000;
 
 	if (id > AT91_PMC_PCR_PID_MASK)
-		return;
+		return -EINVAL;
+
+	if (div > 0xff)
+		return -EINVAL;
+
+	if (clk_source == GCK_CSS_UPLL_CLK) {
+		if (!at91_upll_clk_enable())
+			return -ENODEV;
+	}
 
 	writel(id, &pmc->pcr);
 	regval = readl(&pmc->pcr);
 	regval &= ~AT91_PMC_PCR_GCKCSS;
 	regval &= ~AT91_PMC_PCR_GCKDIV;
-	regval |= AT91_PMC_PCR_GCKCSS_PLLA_CLK
-			| AT91_PMC_PCR_CMD_WRITE
-			| AT91_PMC_PCR_GCKDIV_(1)
-			| AT91_PMC_PCR_GCKEN;
+
+	switch (clk_source) {
+	case GCK_CSS_SLOW_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_SLOW_CLK;
+		break;
+	case GCK_CSS_MAIN_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_MAIN_CLK;
+		break;
+	case GCK_CSS_PLLA_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_PLLA_CLK;
+		break;
+	case GCK_CSS_UPLL_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_UPLL_CLK;
+		break;
+	case GCK_CSS_MCK_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_MCK_CLK;
+		break;
+	case GCK_CSS_AUDIO_CLK:
+		regval |= AT91_PMC_PCR_GCKCSS_AUDIO_CLK;
+		break;
+	default:
+		printf("Error GCK clock source selection!\n");
+		return -EINVAL;
+	}
+
+	regval |= AT91_PMC_PCR_CMD_WRITE |
+		  AT91_PMC_PCR_GCKDIV_(div) |
+		  AT91_PMC_PCR_GCKEN;
 
 	writel(regval, &pmc->pcr);
+
+	do {
+		udelay(1);
+		status = readl(&pmc->sr);
+	} while ((!!(--timeout)) && (!(status & AT91_PMC_GCKRDY)));
+
+	if (!timeout)
+		printf("Timeout waiting for GCK ready!\n");
+
+	return 0;
 }
 
 u32 at91_get_generated_clk(int id)

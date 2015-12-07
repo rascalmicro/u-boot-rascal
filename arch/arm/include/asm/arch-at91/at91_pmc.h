@@ -258,6 +258,7 @@ typedef struct at91_pmc {
 #define		AT91_PMC_PCK1RDY	(1 <<  9)		/* Programmable Clock 1 */
 #define		AT91_PMC_PCK2RDY	(1 << 10)		/* Programmable Clock 2 */
 #define		AT91_PMC_PCK3RDY	(1 << 11)		/* Programmable Clock 3 */
+#define		AT91_PMC_GCKRDY		(1 << 24)
 
 #define		AT91_PMC_PROTKEY	0x504d4301	/* Activation Code */
 #endif
