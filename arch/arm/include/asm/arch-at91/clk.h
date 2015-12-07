@@ -122,5 +122,6 @@ void at91_periph_clk_disable(int id);
 void atmel_enable_periph_generated_clk(int id);
 u32 at91_get_generated_clk(int id);
 void at91_system_clk_enable(int sys_clk);
+void at91_system_clk_disable(int sys_clk);
 
 #endif /* __ASM_ARM_ARCH_CLK_H__ */
