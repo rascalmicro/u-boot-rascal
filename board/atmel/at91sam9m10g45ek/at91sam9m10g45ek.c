@@ -11,7 +11,6 @@
 #include <asm/arch/at91sam9g45_matrix.h>
 #include <asm/arch/at91sam9_smc.h>
 #include <asm/arch/at91_common.h>
-#include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
 #include <asm/arch/clk.h>
 #include <lcd.h>
@@ -34,7 +33,6 @@ void at91sam9m10g45ek_nand_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *)ATMEL_BASE_SMC;
 	struct at91_matrix *matrix = (struct at91_matrix *)ATMEL_BASE_MATRIX;
-	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
 	unsigned long csa;
 
 	/* Enable CS3 */
@@ -61,7 +59,7 @@ void at91sam9m10g45ek_nand_hw_init(void)
 	       AT91_SMC_MODE_TDF_CYCLE(3),
 	       &smc->cs[3].mode);
 
-	writel(1 << ATMEL_ID_PIOC, &pmc->pcer);
+	at91_periph_clk_enable(ATMEL_ID_PIOC);
 
 	/* Configure RDY/BSY */
 	at91_set_gpio_input(CONFIG_SYS_NAND_READY_PIN, 1);
@@ -74,9 +72,7 @@ void at91sam9m10g45ek_nand_hw_init(void)
 #ifdef CONFIG_CMD_USB
 static void at91sam9m10g45ek_usb_hw_init(void)
 {
-	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
-
-	writel(1 << ATMEL_ID_PIODE, &pmc->pcer);
+	at91_periph_clk_enable(ATMEL_ID_PIODE);
 
 	at91_set_gpio_output(AT91_PIN_PD1, 0);
 	at91_set_gpio_output(AT91_PIN_PD3, 0);
@@ -86,11 +82,9 @@ static void at91sam9m10g45ek_usb_hw_init(void)
 #ifdef CONFIG_MACB
 static void at91sam9m10g45ek_macb_hw_init(void)
 {
-	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
 	struct at91_port *pioa = (struct at91_port *)ATMEL_BASE_PIOA;
 
-	/* Enable clock */
-	writel(1 << ATMEL_ID_EMAC, &pmc->pcer);
+	at91_periph_clk_enable(ATMEL_ID_EMAC);
 
 	/*
 	 * Disable pull-up on:
@@ -150,8 +144,6 @@ void lcd_disable(void)
 
 static void at91sam9m10g45ek_lcd_hw_init(void)
 {
-	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
-
 	at91_set_A_periph(AT91_PIN_PE0, 0);	/* LCDDPWR */
 	at91_set_A_periph(AT91_PIN_PE2, 0);	/* LCDCC */
 	at91_set_A_periph(AT91_PIN_PE3, 0);	/* LCDVSYNC */
@@ -183,7 +175,7 @@ static void at91sam9m10g45ek_lcd_hw_init(void)
 	at91_set_A_periph(AT91_PIN_PE29, 0);	/* LCDD22 */
 	at91_set_A_periph(AT91_PIN_PE30, 0);	/* LCDD23 */
 
-	writel(1 << ATMEL_ID_LCDC, &pmc->pcer);
+	at91_periph_clk_enable(ATMEL_ID_LCDC);
 
 	gd->fb_base = CONFIG_AT91SAM9G45_LCD_BASE;
 }
