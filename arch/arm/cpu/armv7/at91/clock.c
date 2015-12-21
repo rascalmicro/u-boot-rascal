@@ -235,6 +235,12 @@ u32 at91_get_generated_clk(int id)
 	case AT91_PMC_PCR_GCKCSS_PLLA_CLK:
 		freq = gd->arch.plla_rate_hz;
 		break;
+	case AT91_PMC_PCR_GCKCSS_UPLL_CLK:
+		freq = AT91_UTMI_PLL_CLK_FREQ;
+		break;
+	case AT91_PMC_PCR_GCKCSS_MCK_CLK:
+		freq = gd->arch.mck_rate_hz;
+		break;
 	default:
 		break;
 	}
