@@ -162,7 +162,7 @@ int atmel_enable_periph_generated_clk(u32 id, u32 clk_source, u32 div)
 		return -EINVAL;
 
 	if (clk_source == GCK_CSS_UPLL_CLK) {
-		if (!at91_upll_clk_enable())
+		if (at91_upll_clk_enable())
 			return -ENODEV;
 	}
 
