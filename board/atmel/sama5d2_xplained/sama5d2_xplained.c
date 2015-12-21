@@ -225,7 +225,7 @@ static void board_sdhci1_hw_init(void)
 	at91_periph_clk_enable(ATMEL_ID_SDHCI1);
 	atmel_enable_periph_generated_clk(ATMEL_ID_SDHCI1,
 					  GCK_CSS_PLLA_CLK,
-					  AT91_SDHCI0_GCKDIV_RATIO);
+					  AT91_SDHCI1_GCKDIV_RATIO);
 }
 #endif
 
