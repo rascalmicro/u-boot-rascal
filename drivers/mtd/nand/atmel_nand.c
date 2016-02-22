@@ -1433,7 +1433,7 @@ int board_nand_init(struct nand_chip *nand)
 #else
 	nand->dev_ready = at91_nand_wait_ready;
 #endif
-	nand->chip_delay = 20;
+	nand->chip_delay = 100;
 
 #ifdef CONFIG_ATMEL_NAND_HWECC
 #ifdef CONFIG_ATMEL_NAND_HW_PMECC
