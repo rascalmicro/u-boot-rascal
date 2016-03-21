@@ -422,6 +422,7 @@ static void sdhci_set_ios(struct mmc *mmc)
 static int sdhci_init(struct mmc *mmc)
 {
 	struct sdhci_host *host = mmc->priv;
+	u32 status, timeout, card_detect_mask;
 
 	if ((host->quirks & SDHCI_QUIRK_32BIT_DMA_ADDR) && !aligned_buffer) {
 		aligned_buffer = memalign(8, 512*1024);
@@ -435,8 +436,6 @@ static int sdhci_init(struct mmc *mmc)
 	sdhci_set_power(host, fls(mmc->cfg->voltages) - 1);
 
 	if (host->quirks & SDHCI_QUIRK_NO_CD) {
-		unsigned int status;
-
 		sdhci_writel(host, SDHCI_CTRL_CD_TEST_INS | SDHCI_CTRL_CD_TEST,
 			SDHCI_HOST_CONTROL);
 
@@ -445,6 +444,19 @@ static int sdhci_init(struct mmc *mmc)
 		    (!(status & SDHCI_CARD_STATE_STABLE)) ||
 		    (!(status & SDHCI_CARD_DETECT_PIN_LEVEL)))
 			status = sdhci_readl(host, SDHCI_PRESENT_STATE);
+	} else {
+		timeout = 1000000;
+		card_detect_mask = SDHCI_CARD_PRESENT |
+				   SDHCI_CARD_STATE_STABLE |
+				   SDHCI_CARD_DETECT_PIN_LEVEL;
+
+		status = sdhci_readl(host, SDHCI_PRESENT_STATE);
+		while (!((status & card_detect_mask) == card_detect_mask) &&
+		       timeout--)
+			status = sdhci_readl(host, SDHCI_PRESENT_STATE);
+
+		if (!timeout)
+			return -1;
 	}
 
 	/* Enable only interrupts served by the SD controller */
