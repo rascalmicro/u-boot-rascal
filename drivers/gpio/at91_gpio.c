@@ -170,6 +170,7 @@ int at91_set_b_periph(unsigned port, unsigned pin, int use_pullup)
 	return 0;
 }
 
+#if defined(CPU_HAS_PIO3) || defined(CPU_HAS_PIO4)
 /*
  * mux the pin to the "C" internal peripheral role.
  */
@@ -225,6 +226,7 @@ int at91_set_d_periph(unsigned port, unsigned pin, int use_pullup)
 
 	return 0;
 }
+#endif
 
 /*
  * mux the pin to the "E" internal peripheral role.
