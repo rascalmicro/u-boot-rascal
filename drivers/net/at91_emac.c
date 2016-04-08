@@ -13,6 +13,7 @@
 #include <asm/arch/hardware.h>
 #include <asm/arch/at91_emac.h>
 #include <asm/arch/at91_pio.h>
+#include <asm/arch/clk.h>
 #include <net.h>
 #include <netdev.h>
 #include <malloc.h>
